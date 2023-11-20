@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/homepageStyle.css" />
+    <title>使用者首頁</title>
+  </head>
+  <body>
+    <div class="header">
+      ICD-10編碼查詢平台使用者首頁
+      <button class="logout-btn" onclick="location.href='/logout'">登出</button>
+    </div>
+
+    <div class="search-container">
+      <input
+        type="text"
+        placeholder="Search..."
+        class="search-input"
+        id="searchQuery"
+      />
+      <button class="search-btn" id="searchBtn">搜尋</button>
+    </div>
+
+    <div class="results-table">
+      <table id="resultsTable">
+        <thead>
+          <tr>
+            <th>ICD-10編碼</th>
+            <th>疾病或狀況名稱</th>
+            <th>疾病中文名稱</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 搜索结果将被动态填充到这里 -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="history-table">
+      <h3>歷史紀錄</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>ICD-10編碼</th>
+            <th>疾病或狀況名稱</th>
+            <th>疾病中文名稱</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 历史记录将被动态填充到这里 -->
+        </tbody>
+      </table>
+    </div>
+    <script src="../Js/app.js"></script>
+  </body>
+</html>
