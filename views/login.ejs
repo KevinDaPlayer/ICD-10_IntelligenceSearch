@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <meta name="author" content="YuShenG" />
+    <title>ICD-10編碼查詢平台登入</title>
+  </head>
+  <body>
+    <div class="header">ICD-10編碼查詢平台登入</div>
+
+    <div class="login-options">
+      <a href="#" class="btn">使用者登入</a>
+      <a href="adminlogin.html" class="btn">管理員登入</a>
+    </div>
+
+    <div class="login-container">
+      <h2>使用者登入</h2>
+      <form action="http://localhost:3000/login" method="post">
+        <div class="input-group">
+          <label for="username">使用者名稱:</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="username"
+            required
+          />
+        </div>
+        <div class="input-group">
+          <label for="password">密碼:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="password"
+            required
+          />
+        </div>
+        <input type="submit" value="登入" class="login-btn" />
+      </form>
+
+      <div class="register-link">
+        <a href="register.html">註冊帳號</a>
+      </div>
+    </div>
+    <!--</div>-->
+  </body>
+</html>
