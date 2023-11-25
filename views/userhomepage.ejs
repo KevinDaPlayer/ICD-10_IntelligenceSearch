@@ -9,7 +9,9 @@
   <body>
     <div class="header">
       ICD-10編碼查詢平台使用者首頁
-      <button class="logout-btn" onclick="location.href='/logout'">登出</button>
+      <form action="/logout" method="get">
+        <button type="submit" class="logout-btn">登出</button>
+      </form>
     </div>
 
     <div class="search-container">
@@ -18,6 +20,7 @@
           type="text"
           placeholder="Search..."
           class="search-input"
+          name="searchQuery"
           id="searchQuery"
         />
         <button type="submit" class="search-btn">搜尋</button>
@@ -25,18 +28,59 @@
     </div>
 
     <div class="results-table">
+      <% if (typeof searchResults !== "undefined") { %>
+
       <table id="resultsTable">
         <thead>
           <tr>
-            <th>ICD-10編碼</th>
-            <th>疾病或狀況名稱</th>
-            <th>疾病中文名稱</th>
+            <th>2023 ICD-10編碼</th>
+            <th>2023 疾病英文名稱</th>
+            <th>2023 疾病中文名稱</th>
           </tr>
         </thead>
+
         <tbody>
-          <!-- 搜索结果将被动态填充到这里 -->
+          <% searchResults.forEach(function(result) { %>
+
+          <tr>
+            <td><%= result['2023_ICD-10-CM'] %></td>
+            <td><%= result['2023_ICD-10-CM_english_name'] %></td>
+            <td><%= result['2023_ICD-10-CM_chinses_name'] %></td>
+          </tr>
+
+          <% }); %>
         </tbody>
       </table>
+
+      <% } %>
+    </div>
+
+    <div class="results-table">
+      <% if (typeof searchResults2014 !== "undefined") { %>
+
+      <table id="resultsTable">
+        <thead>
+          <tr>
+            <th>2014 ICD-10編碼</th>
+            <th>2014 疾病或狀況英文名稱</th>
+            <th>2014 疾病或狀況中文名稱</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% searchResults2014.forEach(function(result) { %>
+
+          <tr>
+            <td><%= result['2014_ICD-10-CM'] %></td>
+            <td><%= result['2014_ICD-10-CM_english_name'] %></td>
+            <td><%= result['2014_ICD-10-CM_chinses_name'] %></td>
+          </tr>
+
+          <% }); %>
+        </tbody>
+      </table>
+
+      <% } %>
     </div>
 
     <div class="history-table">
@@ -54,6 +98,6 @@
         </tbody>
       </table>
     </div>
-    <script src="../Js/app.js"></script>
+    <!-- <script src="../Js/app.js"></script> -->
   </body>
 </html>
