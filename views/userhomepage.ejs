@@ -86,16 +86,14 @@
     <div class="history-table">
       <h3>歷史紀錄</h3>
       <table>
-        <thead>
-          <tr>
-            <th>ICD-10編碼</th>
-            <th>疾病或狀況名稱</th>
-            <th>疾病中文名稱</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- 历史记录将被动态填充到这里 -->
-        </tbody>
+        <tr>
+          <th>搜尋歷史</th>
+        </tr>
+        <% searchHistory.forEach(function(item) { %>
+        <tr>
+          <td><%= item %></td>
+        </tr>
+        <% }); %>
       </table>
     </div>
     <!-- <script src="../Js/app.js"></script> -->

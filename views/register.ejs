@@ -11,7 +11,7 @@
 
     <div class="register-container">
       <h2>註冊帳號</h2>
-      <form action="/submit-your-register-form" method="post">
+      <form action="/regis" method="post">
         <div class="input-group flex-container">
           <div class="email-input-container">
             <label for="email">請輸入帳號(電子郵件):</label>
@@ -40,7 +40,7 @@
           <input
             type="password"
             id="confirm-password"
-            name="confirm-password"
+            name="confirmPassword"
             required
             placeholder="Confirm Password"
           />
@@ -50,7 +50,7 @@
           <input
             type="text"
             id="verification-code"
-            name="verification-code"
+            name="verificationCode"
             required
             placeholder="Enter Verification Code"
           />
@@ -58,9 +58,41 @@
 
         <div>
           <input type="submit" value="註冊" class="submit-btn" />
-          <a href="javascript:history.back()" class="back-btn">返回</a>
+          <a href="http://localhost:3000/clearVerificationCode" class="back-btn"
+            >返回</a
+          >
         </div>
       </form>
     </div>
+    <script>
+      document.querySelector(".verify-btn").addEventListener("click", () => {
+        const email = document.getElementById("email").value;
+        fetch("/sendVerificationCode", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: email }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("網絡響應不是 OK");
+            }
+            return response.json().then((data) => ({ data, response }));
+          })
+          .then(({ data, response }) => {
+            // 現在你可以在這裡訪問 response 和 data
+            if (response.ok) {
+              alert("驗證碼已發送到您的郵箱");
+            } else {
+              alert("錯誤：" + data.message);
+            }
+          })
+          .catch((error) => {
+            console.error("發送請求失敗：", error);
+            alert("無法發送驗證碼");
+          });
+      });
+    </script>
   </body>
 </html>
