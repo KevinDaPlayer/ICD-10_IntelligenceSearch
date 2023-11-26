@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/homepageStyle.css" />
+    <title>使用者首頁</title>
+  </head>
+  <body>
+    <div class="header">
+      ICD-10編碼查詢平台管理者首頁
+      <form action="/adminlogout" method="get">
+        <button type="submit" class="logout-btn">登出</button>
+      </form>
+    </div>
+
+    <div class="search-container">
+      <form action="/adminSearch" method="post">
+        <input
+          type="text"
+          placeholder="Search..."
+          class="search-input"
+          name="searchQuery"
+          id="searchQuery"
+        />
+        <button type="submit" class="search-btn">搜尋</button>
+      </form>
+    </div>
+
+    <div class="results-table">
+      <% if (typeof searchResults !== "undefined") { %>
+
+      <table id="resultsTable">
+        <thead>
+          <tr>
+            <th>2023 ICD-10編碼</th>
+            <th>2023 疾病英文名稱</th>
+            <th>2023 疾病中文名稱</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% searchResults.forEach(function(result) { %>
+
+          <tr>
+            <td><%= result['2023_ICD-10-CM'] %></td>
+            <td><%= result['2023_ICD-10-CM_english_name'] %></td>
+            <td><%= result['2023_ICD-10-CM_chinses_name'] %></td>
+          </tr>
+
+          <% }); %>
+        </tbody>
+      </table>
+
+      <% } %>
+    </div>
+
+    <div class="results-table">
+      <% if (typeof searchResults2014 !== "undefined") { %>
+
+      <table id="resultsTable">
+        <thead>
+          <tr>
+            <th>2014 ICD-10編碼</th>
+            <th>2014 疾病或狀況英文名稱</th>
+            <th>2014 疾病或狀況中文名稱</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% searchResults2014.forEach(function(result) { %>
+
+          <tr>
+            <td><%= result['2014_ICD-10-CM'] %></td>
+            <td><%= result['2014_ICD-10-CM_english_name'] %></td>
+            <td><%= result['2014_ICD-10-CM_chinses_name'] %></td>
+          </tr>
+
+          <% }); %>
+        </tbody>
+      </table>
+
+      <% } %>
+    </div>
+
+    <div class="results-table">
+      <h3>更新2023 ICD10 編碼</h3>
+      <form action="/update2023Icd10Coding" method="post">
+        <table id="resultsTable">
+          <thead>
+            <tr>
+              <th>2023 ICD-10編碼</th>
+              <th>2023 疾病或狀況英文名稱</th>
+              <th>2023 疾病或狀況中文名稱</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="text" name="ICD10CM" required /></td>
+              <td><input type="text" name="englishName" required /></td>
+              <td><input type="text" name="chineseName" required /></td>
+            </tr>
+          </tbody>
+        </table>
+        <button type="submit" class="submit-btn">提交</button>
+      </form>
+    </div>
+
+    <div class="results-table">
+      <h3>更新2014 ICD10 編碼</h3>
+      <form action="/update2014Icd10Coding" method="post">
+        <table id="resultsTable">
+          <thead>
+            <tr>
+              <th>2014 ICD-10編碼</th>
+              <th>2014 疾病或狀況英文名稱</th>
+              <th>2014 疾病或狀況中文名稱</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="text" name="ICD10CM2014" required /></td>
+              <td><input type="text" name="englishName2014" required /></td>
+              <td><input type="text" name="chineseName2014" required /></td>
+            </tr>
+          </tbody>
+        </table>
+        <button type="submit" class="submit-btn">提交</button>
+      </form>
+    </div>
+
+    <script>
+      window.addEventListener("load", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const message = urlParams.get("message");
+        if (message) {
+          alert(message);
+        }
+      });
+    </script>
+  </body>
+</html>

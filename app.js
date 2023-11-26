@@ -82,6 +82,50 @@ app.post("/login", (req, res) => {
   }
 });
 
+//adminLOGIN路由
+app.get("/adminlogin", (req, res) => {
+  res.render("adminlogin");
+});
+
+app.post("/adminlogin", (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const query = "SELECT * FROM admins WHERE username = ?";
+    connection.query(query, [username], async (error, results, fields) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).send("伺服器錯誤。");
+      }
+
+      const user = results[0];
+      if (!user) {
+        return res.send("管理員不存在。");
+      }
+      console.log("輸入的密碼:", password);
+      console.log("資料庫的密碼:", user.password);
+
+      if (password !== user.password) {
+        return res.send("密碼不正確。");
+      }
+
+      req.session.isAdminAuthenticated = true;
+      res.redirect("/admindashboard");
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("伺服器錯誤。");
+  }
+});
+
+app.get("/admindashboard", (req, res) => {
+  if (req.session.isAdminAuthenticated) {
+    res.render("adminuserpage");
+  } else {
+    res.redirect("/adminlogin");
+  }
+});
+
 //發送驗證碼路由
 app.post("/sendVerificationCode", async (req, res) => {
   const email = req.body.email;
@@ -199,9 +243,15 @@ app.get("/logout", (req, res) => {
     res.redirect("/login");
   });
 });
+//管理者登出路由
+app.get("/adminlogout", (req, res) => {
+  req.session.destroy(function (err) {
+    res.redirect("/adminlogin");
+  });
+});
 
 // search路由 第一版
-/*app.post("/search", (req, res) => {
+/*app.post("/adminSearch", (req, res) => {
   const searchQuery = req.body.searchQuery;
   console.log(req.body.searchQuery);
 
@@ -238,6 +288,23 @@ app.get("/logout", (req, res) => {
     });
   });
 });*/
+
+//admin的search路由(無搜尋紀錄)
+app.post("/adminSearch", (req, res) => {
+  const searchQuery = req.body.searchQuery;
+  const currentUsername = req.session.username; // 從會話中獲取當前用戶名
+  console.log(req.body.searchQuery);
+
+  performSearchInDatabase(searchQuery, (searchResults2023) => {
+    performSearch2014(searchQuery, (searchResults2014) => {
+      res.render("adminuserpage", {
+        searchResults: searchResults2023.length > 0 ? searchResults2023 : [],
+        searchResults2014:
+          searchResults2014.length > 0 ? searchResults2014 : [],
+      });
+    });
+  });
+});
 
 app.post("/search", (req, res) => {
   const searchQuery = req.body.searchQuery;
@@ -281,6 +348,99 @@ app.post("/search", (req, res) => {
         });
       }
     });
+  });
+});
+//管理員更新2023ICD10路由
+app.post("/update2023Icd10Coding", (req, res) => {
+  const { ICD10CM, englishName, chineseName } = req.body;
+
+  const checkQuery = "SELECT * FROM `icd-10-cm_pcs` WHERE `2023_ICD-10-CM` = ?";
+  connection.query(checkQuery, [ICD10CM], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("資料庫查詢錯誤");
+    }
+
+    if (results.length > 0) {
+      // 記錄存在，更新資料
+      const updateQuery =
+        "UPDATE `icd-10-cm_pcs` SET `2023_ICD-10-CM_english_name` = ?, `2023_ICD-10-CM_chinses_name` = ? WHERE `2023_ICD-10-CM` = ?";
+      connection.query(
+        updateQuery,
+        [englishName, chineseName, ICD10CM],
+        (err, results) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).send("無法更新資料");
+          }
+          res.redirect("/admindashboard?message=操作成功");
+        }
+      );
+    } else {
+      // 記錄不存在，插入新資料
+      const insertQuery =
+        "INSERT INTO `icd-10-cm_pcs` (`2023_ICD-10-CM`, `2023_ICD-10-CM_english_name`, `2023_ICD-10-CM_chinses_name`) VALUES (?, ?, ?)";
+      connection.query(
+        insertQuery,
+        [ICD10CM, englishName, chineseName],
+        (err, results) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).send("無法插入資料");
+          }
+          res.redirect("/admindashboard?message=操作成功");
+        }
+      );
+    }
+  });
+});
+
+// 管理員更新2014ICD10路由
+app.post("/update2014Icd10Coding", (req, res) => {
+  const { ICD10CM2014, englishName2014, chineseName2014 } = req.body;
+
+  const checkQuery = "SELECT * FROM `icd-10-cm_pcs` WHERE `2014_ICD-10-CM` = ?";
+  connection.query(checkQuery, [ICD10CM2014], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("資料庫查詢錯誤");
+    }
+
+    if (results.length > 0) {
+      // 記錄存在，更新資料
+      const updateQuery =
+        "UPDATE `icd-10-cm_pcs` SET `2014_ICD-10-CM_english_name` = ?, `2014_ICD-10-CM_chinses_name` = ? WHERE `2014_ICD-10-CM` = ?";
+      connection.query(
+        updateQuery,
+        [englishName2014, chineseName2014, ICD10CM2014],
+        (err, results) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).send("無法更新資料");
+          }
+          res.redirect("/admindashboard?message=操作成功");
+        }
+      );
+    } else {
+      // 記錄不存在，插入新資料
+      const insertQuery = `
+  INSERT INTO \`icd-10-cm_pcs\` 
+  (\`2023_ICD-10-CM\`, \`2014_ICD-10-CM\`, \`2014_ICD-10-CM_english_name\`, \`2014_ICD-10-CM_chinses_name\`) 
+  VALUES 
+  (CONCAT('temp_', UNIX_TIMESTAMP()), ?, ?, ?)`;
+
+      connection.query(
+        insertQuery,
+        [ICD10CM2014, englishName2014, chineseName2014],
+        (err, results) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).send("無法插入資料");
+          }
+          res.redirect("/admindashboard?message=操作成功");
+        }
+      );
+    }
   });
 });
 
