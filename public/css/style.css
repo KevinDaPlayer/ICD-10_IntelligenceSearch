@@ -15,7 +15,7 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 .login-container h2 {
-  text-align: center; /* 使文字水平居中 */
+  text-align: center;
 }
 .input-group {
   margin-bottom: 10px;
@@ -44,40 +44,39 @@ input[type="submit"]:hover {
   background-color: #45a049;
 }
 
-/*註冊帳號連結*/
 .register-link {
-  text-align: right; /* 文本右對齊 */
-  margin-top: 10px; /* 與表單元素的間距 */
+  text-align: right;
+  margin-top: 10px;
 }
 
 .register-link a {
-  color: #0000ee; /* 常見的鏈接顏色 */
-  text-decoration: none; /* 去除下劃線 */
+  color: #0000ee;
+  text-decoration: none;
 }
 
 .register-link a:hover {
-  text-decoration: underline; /* 鼠標懸停時添加下劃線 */
+  text-decoration: underline;
 }
 
 .main-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 40px); /* 減去 header 的高度和它的內距 */
+  height: calc(100vh - 40px);
 }
-/*網頁大標*/
+
 .header {
   position: fixed;
-  background-color: #003366; /* 深藍色背景 */
-  color: white; /* 白色文字 */
-  padding: 20px 0; /* 上下有10像素的內距 */
-  text-align: center; /* 文字置中 */
-  width: 100%; /* 寬度設定為100% */
-  box-sizing: border-box; /* 確保寬度包含內距 */
-  position: fixed; /* 固定位置 */
-  top: 0; /* 距離頂部0像素 */
-  left: 0; /* 距離左側0像素 */
-  z-index: 1000; /* 確保它在頁面的最上層 */
+  background-color: #003366;
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
   /*
     background-color: #003366; 
     color: white; 
@@ -88,7 +87,6 @@ input[type="submit"]:hover {
     margin-bottom: 20px; */
 }
 
-/*登user類別入選擇*/
 .login-options {
   text-align: center;
   margin-bottom: 20px;
@@ -116,6 +114,6 @@ input[type="submit"]:hover {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  width: 100%; /* 讓按鈕寬度與輸入框相同 */
-  margin-bottom: 20px; /* 與返回按鈕之間的間隔 */
+  width: 100%;
+  margin-bottom: 20px;
 }

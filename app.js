@@ -82,11 +82,11 @@ app.post("/login", (req, res) => {
   }
 });
 
-//adminLOGIN路由
+//進入adminLOGIN頁面路由
 app.get("/adminlogin", (req, res) => {
   res.render("adminlogin");
 });
-
+//adminLOGIN路由
 app.post("/adminlogin", (req, res) => {
   const { username, password } = req.body;
 
@@ -118,6 +118,7 @@ app.post("/adminlogin", (req, res) => {
   }
 });
 
+//進入admin主頁
 app.get("/admindashboard", (req, res) => {
   if (req.session.isAdminAuthenticated) {
     res.render("adminuserpage");
@@ -126,7 +127,7 @@ app.get("/admindashboard", (req, res) => {
   }
 });
 
-//發送驗證碼路由
+//MAIL發送驗證碼路由
 app.post("/sendVerificationCode", async (req, res) => {
   const email = req.body.email;
   const verificationCode = generateVerificationCode();
@@ -157,7 +158,7 @@ app.post("/sendVerificationCode", async (req, res) => {
   }
 });
 
-// 註冊頁面路由
+// 進入註冊頁面路由
 app.get("/register", (req, res) => {
   res.render("register");
 });
@@ -166,17 +167,14 @@ app.get("/register", (req, res) => {
 app.post("/regis", (req, res) => {
   const { email, password, confirmPassword, verificationCode } = req.body;
 
-  // 檢查密碼一致性
   if (password !== confirmPassword) {
     return res.status(400).send("密碼不一致");
   }
 
-  // 驗證驗證碼
   if (req.session.verificationCode !== verificationCode) {
     return res.status(400).send("驗證碼不正確");
   }
 
-  // 插入用戶資料到資料庫
   const insertQuery = "INSERT INTO users (username, password) VALUES (?, ?)";
   connection.query(insertQuery, [email, password], (err, results) => {
     if (err) {
@@ -188,17 +186,70 @@ app.post("/regis", (req, res) => {
       delete req.session.verificationCode;
     }
 
-    // 處理用戶註冊成功後的情況
     res.send("用戶註冊成功");
   });
 });
 
-//返回鍵清除驗證碼路由
+//返回鍵 清除驗證碼路由
 app.get("/clearVerificationCode", (req, res) => {
   if (req.session) {
     delete req.session.verificationCode;
   }
   res.render("login");
+});
+
+//進入更改密碼頁面路由
+app.get("/changePassword", (req, res) => {
+  res.render("changepassword");
+});
+//更改密碼路由
+app.post("/changePassword", (req, res) => {
+  const { originpassword, newpassword, confirmNewPassword } = req.body;
+  const currentUsername = req.session.username;
+
+  if (!currentUsername) {
+    return res.status(400).send("未檢測到用戶登入。");
+  }
+
+  if (newpassword !== confirmNewPassword) {
+    return res.status(400).send("新密碼與確認新密碼不一致。");
+  }
+
+  connection.query(
+    "SELECT password FROM users WHERE username = ?",
+    [currentUsername],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send("伺服器錯誤，無法獲取用戶信息。");
+      }
+
+      if (results.length === 0) {
+        return res.status(400).send("用戶不存在。");
+      }
+
+      const user = results[0];
+      if (originpassword !== user.password) {
+        return res.status(400).send("原密碼不正確。");
+      }
+
+      if (originpassword === newpassword) {
+        return res.status(400).send("新密碼不能與舊密碼相同。");
+      }
+
+      connection.query(
+        "UPDATE users SET password = ? WHERE username = ?",
+        [newpassword, currentUsername],
+        (err, updateResults) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).send("無法更新密碼。");
+          }
+          res.send("密碼更新成功。");
+        }
+      );
+    }
+  );
 });
 
 // 主頁路由
@@ -327,7 +378,6 @@ app.post("/search", (req, res) => {
 
               let updatedSearchHistory =
                 results.length > 0 ? results[0].searchhistory || [] : [];
-              console.log(updatedSearchHistory);
 
               res.render("userhomepage", {
                 searchResults:
@@ -340,6 +390,7 @@ app.post("/search", (req, res) => {
           );
         });
       } else {
+        // 如果用戶未登入，僅渲染搜索結果，不顯示搜索歷史
         res.render("userhomepage", {
           searchResults: searchResults2023.length > 0 ? searchResults2023 : [],
           searchResults2014:
@@ -407,7 +458,6 @@ app.post("/update2014Icd10Coding", (req, res) => {
     }
 
     if (results.length > 0) {
-      // 記錄存在，更新資料
       const updateQuery =
         "UPDATE `icd-10-cm_pcs` SET `2014_ICD-10-CM_english_name` = ?, `2014_ICD-10-CM_chinses_name` = ? WHERE `2014_ICD-10-CM` = ?";
       connection.query(
@@ -422,7 +472,6 @@ app.post("/update2014Icd10Coding", (req, res) => {
         }
       );
     } else {
-      // 記錄不存在，插入新資料
       const insertQuery = `
   INSERT INTO \`icd-10-cm_pcs\` 
   (\`2023_ICD-10-CM\`, \`2014_ICD-10-CM\`, \`2014_ICD-10-CM_english_name\`, \`2014_ICD-10-CM_chinses_name\`) 
@@ -485,7 +534,7 @@ function updateSearchHistory(username, newSearch, callback) {
     (err, results) => {
       if (err) {
         console.error(err);
-        return callback(err); // 傳遞錯誤給回調函數
+        return callback(err);
       }
 
       if (results.length > 0) {
@@ -496,21 +545,20 @@ function updateSearchHistory(username, newSearch, callback) {
           searchHistory = searchHistory.slice(0, 10);
         }
 
-        // 更新資料庫
         connection.query(
           "UPDATE users SET searchhistory = ? WHERE username = ?",
           [JSON.stringify(searchHistory), username],
           (updateErr, updateResults) => {
             if (updateErr) {
               console.error(updateErr);
-              return callback(updateErr); // 傳遞錯誤給回調函數
+              return callback(updateErr);
             }
-            callback(null); // 更新成功，呼叫回調函數沒有錯誤
+            callback(null);
           }
         );
       } else {
         console.log("用戶未找到");
-        callback(new Error("用戶未找到")); // 用戶不存在的錯誤
+        callback(new Error("用戶未找到"));
       }
     }
   );
@@ -534,5 +582,5 @@ app.get("/", (req, res) => {
 
 // 啟動 Express
 app.listen(3000, () => {
-  console.log("服务器已启动在端口 3000。");
+  console.log("伺服器已啟動 3000。");
 });

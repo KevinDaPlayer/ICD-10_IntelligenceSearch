@@ -1,7 +1,7 @@
 body {
   font-family: Arial, sans-serif;
   margin: 0;
-  padding-top: 60px; /* 为固定的header留出空间 */
+  padding-top: 60px;
 }
 
 .header {
@@ -15,6 +15,31 @@ body {
   z-index: 1000;
 }
 
+.nav-container {
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  background-color: #0055a4;
+  top: 60px;
+  z-index: 999;
+}
+
+.user-nav {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.nav-link {
+  margin: 0 10px;
+  color: white;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
 .search-container {
   display: flex;
   justify-content: center;
@@ -25,7 +50,7 @@ body {
 .search-input {
   padding: 10px;
   margin-right: 10px;
-  width: 50%; /* 或者根据需要调整宽度 */
+  width: 50%;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
@@ -40,13 +65,13 @@ body {
 }
 
 .logout-btn {
-  position: absolute; /* 绝对定位 */
-  right: 20px; /* 与容器右边界的距离 */
-  top: 50%; /* 顶部偏移，置于中间 */
-  transform: translateY(-50%); /* 垂直居中 */
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
 
   padding: 5px 10px;
-  background-color: #dadada; /* 登出按钮的背景颜色，通常是红色或其他醒目颜色 */
+  background-color: #dadada;
   color: rgb(0, 0, 0);
   border: none;
   border-radius: 4px;
@@ -55,15 +80,15 @@ body {
 
 .results-table,
 .history-table {
-  width: 80%; /* 或者根据需要调整宽度 */
-  margin: 20px auto; /* 居中显示 */
+  width: 80%;
+  margin: 20px auto;
   margin-top: 70px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px; /* 与表格标题的间距 */
+  margin-top: 10px;
 }
 
 table,

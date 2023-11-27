@@ -76,7 +76,7 @@
         })
           .then((response) => {
             if (!response.ok) {
-              throw new Error("網絡響應不是 OK");
+              throw new Error("網絡響應有誤");
             }
             return response.json().then((data) => ({ data, response }));
           })
