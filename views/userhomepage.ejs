@@ -98,7 +98,7 @@
         </tr>
         <% searchHistory.forEach(function(item) { %>
         <tr>
-          <td><%= item %></td>
+          <td onclick="performSearch('<%= item %>')"><%= item %></td>
         </tr>
         <% }); %>
       </table>
@@ -111,6 +111,14 @@
           alert(message);
         }
       });
+
+      function performSearch(query) {
+        const searchInput = document.getElementById("searchQuery");
+        const searchForm = document.querySelector(".search-container form");
+
+        searchInput.value = query;
+        searchForm.submit();
+      }
     </script>
   </body>
 </html>

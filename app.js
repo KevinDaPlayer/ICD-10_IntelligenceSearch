@@ -374,7 +374,7 @@ app.post("/search", (req, res) => {
                 console.error("Database query error:", err);
                 return; // 處理錯誤
               }
-              console.log("Query results:", results);
+              /*console.log("Query results:", results);*/
 
               let updatedSearchHistory =
                 results.length > 0 ? results[0].searchhistory || [] : [];
