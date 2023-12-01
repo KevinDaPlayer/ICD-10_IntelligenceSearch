@@ -111,3 +111,8 @@ h3 {
   text-shadow: #003366;
   text-align: center;
 }
+
+.copyButtom {
+  padding: 10px 0;
+  justify-content: flex-end;
+}
