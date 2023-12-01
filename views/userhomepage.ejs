@@ -86,7 +86,15 @@
           <% searchResults2014.forEach(function(result) { %>
 
           <tr>
-            <td><%= result['2014_ICD-10-CM'] %></td>
+            <td>
+              <%= result['2014_ICD-10-CM'] %>
+              <button
+                class="copyButtom"
+                onclick="copyToClipboard('<%= result['2014_ICD-10-CM'] %>')"
+              >
+                複製
+              </button>
+            </td>
             <td><%= result['2014_ICD-10-CM_english_name'] %></td>
             <td><%= result['2014_ICD-10-CM_chinses_name'] %></td>
           </tr>
