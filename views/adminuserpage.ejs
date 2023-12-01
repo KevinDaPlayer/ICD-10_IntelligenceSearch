@@ -14,6 +14,13 @@
       </form>
     </div>
 
+    <div class="nav-container">
+      <nav class="user-nav">
+        <a href="/admindashboard" class="nav-link">首頁</a>
+        <a href="/adminUpdateHistory" class="nav-link">編碼更新紀錄</a>
+      </nav>
+    </div>
+
     <div class="search-container">
       <form action="/adminSearch" method="post">
         <input
@@ -103,6 +110,7 @@
           </tbody>
         </table>
         <button type="submit" class="submit-btn">提交</button>
+        <button type="button" class="delete-btn">刪除編碼</button>
       </form>
     </div>
 
@@ -136,6 +144,33 @@
         if (message) {
           alert(message);
         }
+      });
+
+      document.querySelector(".delete-btn").addEventListener("click", () => {
+        const ICD10CM = document.querySelector('input[name="ICD10CM"]').value;
+
+        fetch("/deleteIcd10Coding", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ICD10CM: ICD10CM }),
+        })
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error("Network response was not ok.");
+          })
+          .then((data) => {
+            alert(data.message);
+          })
+          .catch((error) => {
+            console.error(
+              "There has been a problem with your fetch operation:",
+              error
+            );
+          });
       });
     </script>
   </body>

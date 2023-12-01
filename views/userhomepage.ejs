@@ -103,6 +103,14 @@
         <% }); %>
       </table>
     </div>
-    <!-- <script src="../Js/app.js"></script> -->
+    <script>
+      window.addEventListener("load", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const message = urlParams.get("message");
+        if (message) {
+          alert(message);
+        }
+      });
+    </script>
   </body>
 </html>

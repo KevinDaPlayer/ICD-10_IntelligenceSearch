@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/homepageStyle.css" />
+    <title>管理員更新歷史</title>
+  </head>
+  <body>
+    <div class="header">管理員更新歷史</div>
+
+    <div class="nav-container">
+      <nav class="user-nav">
+        <a href="/admindashboard" class="nav-link">首頁</a>
+        <a href="/adminUpdateHistory" class="nav-link">編碼更新紀錄</a>
+      </nav>
+    </div>
+
+    <div class="content">
+      <table id="updateHistoryTable" class="results-table">
+        <thead>
+          <tr>
+            <th>更新管理員</th>
+            <th>更新內容</th>
+            <th>更新時間</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% updateHistory.forEach(function(record) { %>
+          <tr>
+            <td><%= record.updateAdmin %></td>
+            <td><%= record.updateMessage %></td>
+            <td><%= record.updateDate %></td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

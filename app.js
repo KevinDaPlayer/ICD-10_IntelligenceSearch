@@ -108,7 +108,7 @@ app.post("/adminlogin", (req, res) => {
       if (password !== user.password) {
         return res.send("密碼不正確。");
       }
-
+      req.session.adminname = user.username;
       req.session.isAdminAuthenticated = true;
       res.redirect("/admindashboard");
     });
@@ -343,7 +343,7 @@ app.get("/adminlogout", (req, res) => {
 //admin的search路由(無搜尋紀錄)
 app.post("/adminSearch", (req, res) => {
   const searchQuery = req.body.searchQuery;
-  const currentUsername = req.session.username; // 從會話中獲取當前用戶名
+  const currentAdminname = req.session.adminUsername;
   console.log(req.body.searchQuery);
 
   performSearchInDatabase(searchQuery, (searchResults2023) => {
@@ -401,10 +401,23 @@ app.post("/search", (req, res) => {
     });
   });
 });
-//管理員更新2023ICD10路由
-app.post("/update2023Icd10Coding", (req, res) => {
-  const { ICD10CM, englishName, chineseName } = req.body;
 
+app.get("/adminUpdateHistory", (req, res) => {
+  const query =
+    "SELECT * FROM adminUpdateHistory ORDER BY updateDate DESC LIMIT 20";
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("資料庫查詢錯誤");
+    }
+    res.render("adminUpdateHistory", { updateHistory: results });
+  });
+});
+
+//管理員更新2023ICD10路由
+/*app.post("/update2023Icd10Coding", (req, res) => {
+  const { ICD10CM, englishName, chineseName } = req.body;
+  const currentAdminname = req.session.adminUsername;
   const checkQuery = "SELECT * FROM `icd-10-cm_pcs` WHERE `2023_ICD-10-CM` = ?";
   connection.query(checkQuery, [ICD10CM], (err, results) => {
     if (err) {
@@ -430,10 +443,11 @@ app.post("/update2023Icd10Coding", (req, res) => {
     } else {
       // 記錄不存在，插入新資料
       const insertQuery =
-        "INSERT INTO `icd-10-cm_pcs` (`2023_ICD-10-CM`, `2023_ICD-10-CM_english_name`, `2023_ICD-10-CM_chinses_name`) VALUES (?, ?, ?)";
+        "INSERT INTO `icd-10-cm_pcs` (`2023_ICD-10-CM`, `2023_ICD-10-CM_english_name`, `2023_ICD-10-CM_chinses_name`, `2023_ICD-10-CM_description`) VALUES (?, ?, ?, ?)";
+      const description = englishName + " " + chineseName; // 或者您可以使用任何其他方式來格式化這個組合
       connection.query(
         insertQuery,
-        [ICD10CM, englishName, chineseName],
+        [ICD10CM, englishName, chineseName, description],
         (err, results) => {
           if (err) {
             console.error(err);
@@ -444,13 +458,93 @@ app.post("/update2023Icd10Coding", (req, res) => {
       );
     }
   });
+});*/
+app.post("/update2023Icd10Coding", (req, res) => {
+  const { ICD10CM, englishName, chineseName } = req.body;
+  const currentAdminname = req.session.adminname;
+  const checkQuery = "SELECT * FROM `icd-10-cm_pcs` WHERE `2023_ICD-10-CM` = ?";
+
+  function recordAdminUpdate(updateMessage) {
+    const insertHistoryQuery =
+      "INSERT INTO adminUpdateHistory (updateAdmin, updateMessage) VALUES (?, ?)";
+    connection.query(
+      insertHistoryQuery,
+      [currentAdminname, updateMessage],
+      (err, results) => {
+        if (err) {
+          console.error("無法記錄管理員更新歷史", err);
+        }
+      }
+    );
+  }
+
+  connection.query(checkQuery, [ICD10CM], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("資料庫查詢錯誤");
+    }
+
+    if (results.length > 0) {
+      // 記錄存在，更新資料
+      const updateQuery =
+        "UPDATE `icd-10-cm_pcs` SET `2023_ICD-10-CM_english_name` = ?, `2023_ICD-10-CM_chinses_name` = ?, `2023_ICD-10-CM_description` = ? WHERE `2023_ICD-10-CM` = ?";
+      const description = englishName + " " + chineseName;
+      connection.query(
+        updateQuery,
+        [englishName, chineseName, description, ICD10CM],
+        (err, results) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).send("無法更新資料");
+          }
+          recordAdminUpdate(
+            `更新(2023版本): 編碼: ${ICD10CM}, 英文名稱: ${englishName}, 中文名稱: ${chineseName}`
+          );
+          res.redirect("/admindashboard?message=操作成功");
+        }
+      );
+    } else {
+      // 記錄不存在，插入新資料
+      const insertQuery =
+        "INSERT INTO `icd-10-cm_pcs` (`2023_ICD-10-CM`, `2023_ICD-10-CM_english_name`, `2023_ICD-10-CM_chinses_name`, `2023_ICD-10-CM_description`) VALUES (?, ?, ?, ?)";
+      const description = englishName + " " + chineseName;
+      connection.query(
+        insertQuery,
+        [ICD10CM, englishName, chineseName, description],
+        (err, results) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).send("無法插入資料");
+          }
+          recordAdminUpdate(
+            `插入(2023版本): 編碼: ${ICD10CM}, 英文名稱: ${englishName}, 英文名稱: ${chineseName}`
+          );
+          res.redirect("/admindashboard?message=操作成功");
+        }
+      );
+    }
+  });
 });
 
 // 管理員更新2014ICD10路由
 app.post("/update2014Icd10Coding", (req, res) => {
   const { ICD10CM2014, englishName2014, chineseName2014 } = req.body;
-
+  const currentAdminname = req.session.adminname;
   const checkQuery = "SELECT * FROM `icd-10-cm_pcs` WHERE `2014_ICD-10-CM` = ?";
+  function recordAdminUpdate(updateMessage) {
+    const insertHistoryQuery =
+      "INSERT INTO adminUpdateHistory (updateAdmin, updateMessage) VALUES (?, ?)";
+    connection.query(
+      insertHistoryQuery,
+      [currentAdminname, updateMessage],
+      (err, results) => {
+        if (err) {
+          console.error("無法記錄管理員更新歷史", err);
+        }
+      }
+    );
+  }
+
   connection.query(checkQuery, [ICD10CM2014], (err, results) => {
     if (err) {
       console.error(err);
@@ -468,27 +562,60 @@ app.post("/update2014Icd10Coding", (req, res) => {
             console.error(err);
             return res.status(500).send("無法更新資料");
           }
+          recordAdminUpdate(
+            `更新(2014版本): 編碼: ${ICD10CM2014}, 英文名稱: ${englishName2014}, 中文名稱: ${chineseName2014}`
+          );
           res.redirect("/admindashboard?message=操作成功");
         }
       );
     } else {
       const insertQuery = `
   INSERT INTO \`icd-10-cm_pcs\` 
-  (\`2023_ICD-10-CM\`, \`2014_ICD-10-CM\`, \`2014_ICD-10-CM_english_name\`, \`2014_ICD-10-CM_chinses_name\`) 
+  (\`2014_ICD-10-CM\`, \`2014_ICD-10-CM_english_name\`, \`2014_ICD-10-CM_chinses_name\`,\`2014_ICD-10-CM_description\` ) 
   VALUES 
-  (CONCAT('temp_', UNIX_TIMESTAMP()), ?, ?, ?)`;
+  (?, ?, ?, ?)`;
 
+      const description2014 = englishName2014 + " " + chineseName2014;
       connection.query(
         insertQuery,
-        [ICD10CM2014, englishName2014, chineseName2014],
+        [ICD10CM2014, englishName2014, chineseName2014, description2014],
         (err, results) => {
           if (err) {
             console.error(err);
             return res.status(500).send("無法插入資料");
           }
+          recordAdminUpdate(
+            `新增(2014版本): 編碼: ${ICD10CM2014}, 英文名稱: ${englishName2014}, 中文名稱: ${chineseName2014}`
+          );
           res.redirect("/admindashboard?message=操作成功");
         }
       );
+    }
+  });
+});
+
+// 刪除2023ICD10路由
+app.post("/deleteIcd10Coding", (req, res) => {
+  const { ICD10CM } = req.body;
+
+  const updateQuery = `
+  UPDATE \`icd-10-cm_pcs\` 
+  SET 
+    \`2023_ICD-10-CM_english_name\` = NULL,
+    \`2023_ICD-10-CM_chinses_name\` = NULL,
+    \`2023_ICD-10-CM_description\` = NULL
+  WHERE \`2023_ICD-10-CM\` = ?
+`;
+
+  connection.query(updateQuery, [ICD10CM], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Error updating the record" });
+    }
+    if (results.affectedRows > 0) {
+      res.json({ message: "編碼刪除成功!" });
+    } else {
+      res.status(404).json({ message: "查無此編碼" });
     }
   });
 });
