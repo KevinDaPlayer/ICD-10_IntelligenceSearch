@@ -54,36 +54,40 @@ app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const query = "SELECT * FROM users WHERE username = ?";
-    connection.query(query, [username], async (error, results, fields) => {
-      if (error) {
-        console.error(error);
-        return res
-          .status(500)
-          .send(
-            '<script>alert("伺服器錯誤!");window.location.href="/login";</script>'
+    /*const query = "SELECT * FROM users WHERE username = ?";*/
+    connection.query(
+      "SELECT * FROM users WHERE username = ?",
+      [username],
+      async (error, results, fields) => {
+        if (error) {
+          console.error(error);
+          return res
+            .status(500)
+            .send(
+              '<script>alert("伺服器錯誤!");window.location.href="/login";</script>'
+            );
+        }
+
+        const user = results[0];
+        if (!user) {
+          return res.send(
+            '<script>alert("查無此用戶!");window.location.href="/login";</script>'
           );
-      }
+        }
+        console.log("輸入的密碼:", password);
+        console.log("資料庫的密碼:", user.password);
 
-      const user = results[0];
-      if (!user) {
-        return res.send(
-          '<script>alert("查無此用戶!");window.location.href="/login";</script>'
-        );
-      }
-      console.log("輸入的密碼:", password);
-      console.log("資料庫的密碼:", user.password);
+        if (password !== user.password) {
+          return res.send(
+            '<script>alert("密碼不正確!");window.location.href="/login";</script>'
+          );
+        }
 
-      if (password !== user.password) {
-        return res.send(
-          '<script>alert("密碼不正確!");window.location.href="/login";</script>'
-        );
+        req.session.isAuthenticated = true;
+        req.session.username = user.username;
+        res.redirect("/dashboard");
       }
-
-      req.session.isAuthenticated = true;
-      req.session.username = user.username;
-      res.redirect("/dashboard");
-    });
+    );
   } catch (error) {
     console.error(error);
     res
@@ -103,35 +107,39 @@ app.post("/adminlogin", (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const query = "SELECT * FROM admins WHERE username = ?";
-    connection.query(query, [username], async (error, results, fields) => {
-      if (error) {
-        console.error(error);
-        return res
-          .status(500)
-          .send(
-            '<script>alert("伺服器錯誤!");window.location.href="/adminlogin";</script>'
+    /*const query = "SELECT * FROM admins WHERE username = ?";*/
+    connection.query(
+      "SELECT * FROM admins WHERE username = ?",
+      [username],
+      async (error, results, fields) => {
+        if (error) {
+          console.error(error);
+          return res
+            .status(500)
+            .send(
+              '<script>alert("伺服器錯誤!");window.location.href="/adminlogin";</script>'
+            );
+        }
+
+        const user = results[0];
+        if (!user) {
+          return res.send(
+            '<script>alert("查無此管理員!");window.location.href="/adminlogin";</script>'
           );
-      }
+        }
+        console.log("輸入的密碼:", password);
+        console.log("資料庫的密碼:", user.password);
 
-      const user = results[0];
-      if (!user) {
-        return res.send(
-          '<script>alert("查無此管理員!");window.location.href="/adminlogin";</script>'
-        );
+        if (password !== user.password) {
+          return res.send(
+            '<script>alert("密碼不正確!");window.location.href="/adminlogin";</script>'
+          );
+        }
+        req.session.adminname = user.username;
+        req.session.isAdminAuthenticated = true;
+        res.redirect("/admindashboard");
       }
-      console.log("輸入的密碼:", password);
-      console.log("資料庫的密碼:", user.password);
-
-      if (password !== user.password) {
-        return res.send(
-          '<script>alert("密碼不正確!");window.location.href="/adminlogin";</script>'
-        );
-      }
-      req.session.adminname = user.username;
-      req.session.isAdminAuthenticated = true;
-      res.redirect("/admindashboard");
-    });
+    );
   } catch (error) {
     console.error(error);
     res
@@ -238,21 +246,25 @@ app.post("/regis", (req, res) => {
       );
   }
 
-  const insertQuery = "INSERT INTO users (username, password) VALUES (?, ?)";
-  connection.query(insertQuery, [email, password], (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("無法儲存用戶資料");
-    }
+  /*const insertQuery = "INSERT INTO users (username, password) VALUES (?, ?)";*/
+  connection.query(
+    "INSERT INTO users (username, password) VALUES (?, ?)",
+    [email, password],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send("無法儲存用戶資料");
+      }
 
-    if (req.session) {
-      delete req.session.verificationCode;
-    }
+      if (req.session) {
+        delete req.session.verificationCode;
+      }
 
-    res.send(
-      '<script>alert("使用者註冊成功!");window.location.href="/login";</script>'
-    );
-  });
+      res.send(
+        '<script>alert("使用者註冊成功!");window.location.href="/login";</script>'
+      );
+    }
+  );
 });
 
 // 進入忘記密碼頁面路由
@@ -275,47 +287,51 @@ app.post("/forgetPassword", (req, res) => {
     );
   }
 
-  const searchQuery = "SELECT * FROM users WHERE username = ?";
-  connection.query(searchQuery, [email], (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.send(
-        '<script>alert("資料庫查詢錯誤");window.location.href="/forgetPassword";</script>'
-      );
-    }
-
-    if (results.length === 0) {
-      // 用戶不存在
-      return res.send(
-        '<script>alert("用戶不存在");window.location.href="/forgetPassword";</script>'
-      );
-    }
-
-    // 用戶存在，更新密碼
-    const updateQuery = "UPDATE users SET password = ? WHERE username = ?";
-    connection.query(
-      updateQuery,
-      [password, email],
-      (updateErr, updateResults) => {
-        if (updateErr) {
-          console.error(updateErr);
-          return res.send(
-            '<script>alert("無法更新密碼");window.location.href="/forgot-password";</script>'
-          );
-        }
-
-        // 清除 session 中的驗證碼
-        if (req.session) {
-          delete req.session.verificationCode;
-        }
-
-        // 密碼更新成功
-        res.send(
-          '<script>alert("密碼變更成功");window.location.href="/login";</script>'
+  /*const searchQuery = "SELECT * FROM users WHERE username = ?";*/
+  connection.query(
+    "SELECT * FROM users WHERE username = ?",
+    [email],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.send(
+          '<script>alert("資料庫查詢錯誤");window.location.href="/forgetPassword";</script>'
         );
       }
-    );
-  });
+
+      if (results.length === 0) {
+        // 用戶不存在
+        return res.send(
+          '<script>alert("用戶不存在");window.location.href="/forgetPassword";</script>'
+        );
+      }
+
+      // 用戶存在，更新密碼
+      /*const updateQuery = "UPDATE users SET password = ? WHERE username = ?";*/
+      connection.query(
+        "UPDATE users SET password = ? WHERE username = ?",
+        [password, email],
+        (updateErr, updateResults) => {
+          if (updateErr) {
+            console.error(updateErr);
+            return res.send(
+              '<script>alert("無法更新密碼");window.location.href="/forgot-password";</script>'
+            );
+          }
+
+          // 清除 session 中的驗證碼
+          if (req.session) {
+            delete req.session.verificationCode;
+          }
+
+          // 密碼更新成功
+          res.send(
+            '<script>alert("密碼變更成功");window.location.href="/login";</script>'
+          );
+        }
+      );
+    }
+  );
 });
 
 //返回鍵 清除驗證碼路由
@@ -422,7 +438,7 @@ app.get("/dashboard", (req, res) => {
       (err, results) => {
         if (err) {
           console.error(err);
-          res.status(500).send("內部伺服器錯誤");
+          res.status(500).send("伺服器錯誤");
           return;
         }
 
@@ -493,8 +509,7 @@ app.get("/adminlogout", (req, res) => {
 //admin的search路由(無搜尋紀錄)
 app.post("/adminSearch", (req, res) => {
   const searchQuery = req.body.searchQuery;
-  const currentAdminname = req.session.adminUsername;
-  console.log(req.body.searchQuery);
+  /*const currentAdminname = req.session.adminUsername;*/
 
   performSearchInDatabase(searchQuery, (searchResults2023) => {
     performSearch2014(searchQuery, (searchResults2014) => {
@@ -553,72 +568,31 @@ app.post("/search", (req, res) => {
 });
 
 app.get("/adminUpdateHistory", (req, res) => {
-  const query =
-    "SELECT * FROM adminUpdateHistory ORDER BY updateDate DESC LIMIT 20";
-  connection.query(query, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("資料庫查詢錯誤");
+  /*const query =
+    "SELECT * FROM adminUpdateHistory ORDER BY updateDate DESC LIMIT 20";*/
+  connection.query(
+    "SELECT * FROM adminUpdateHistory ORDER BY updateDate DESC LIMIT 20",
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send("資料庫查詢錯誤");
+      }
+      res.render("adminUpdateHistory", { updateHistory: results });
     }
-    res.render("adminUpdateHistory", { updateHistory: results });
-  });
+  );
 });
 
 //管理員更新2023ICD10路由
-/*app.post("/update2023Icd10Coding", (req, res) => {
-  const { ICD10CM, englishName, chineseName } = req.body;
-  const currentAdminname = req.session.adminUsername;
-  const checkQuery = "SELECT * FROM `icd-10-cm_pcs` WHERE `2023_ICD-10-CM` = ?";
-  connection.query(checkQuery, [ICD10CM], (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("資料庫查詢錯誤");
-    }
-
-    if (results.length > 0) {
-      // 記錄存在，更新資料
-      const updateQuery =
-        "UPDATE `icd-10-cm_pcs` SET `2023_ICD-10-CM_english_name` = ?, `2023_ICD-10-CM_chinses_name` = ? WHERE `2023_ICD-10-CM` = ?";
-      connection.query(
-        updateQuery,
-        [englishName, chineseName, ICD10CM],
-        (err, results) => {
-          if (err) {
-            console.error(err);
-            return res.status(500).send("無法更新資料");
-          }
-          res.redirect("/admindashboard?message=操作成功");
-        }
-      );
-    } else {
-      // 記錄不存在，插入新資料
-      const insertQuery =
-        "INSERT INTO `icd-10-cm_pcs` (`2023_ICD-10-CM`, `2023_ICD-10-CM_english_name`, `2023_ICD-10-CM_chinses_name`, `2023_ICD-10-CM_description`) VALUES (?, ?, ?, ?)";
-      const description = englishName + " " + chineseName; // 或者您可以使用任何其他方式來格式化這個組合
-      connection.query(
-        insertQuery,
-        [ICD10CM, englishName, chineseName, description],
-        (err, results) => {
-          if (err) {
-            console.error(err);
-            return res.status(500).send("無法插入資料");
-          }
-          res.redirect("/admindashboard?message=操作成功");
-        }
-      );
-    }
-  });
-});*/
 app.post("/update2023Icd10Coding", (req, res) => {
   const { ICD10CM, englishName, chineseName } = req.body;
   const currentAdminname = req.session.adminname;
-  const checkQuery = "SELECT * FROM `icd-10-cm_pcs` WHERE `2023_ICD-10-CM` = ?";
+  /*const checkQuery = "SELECT * FROM `icd-10-cm_pcs` WHERE `2023_ICD-10-CM` = ?";*/
 
   function recordAdminUpdate(updateMessage) {
-    const insertHistoryQuery =
-      "INSERT INTO adminUpdateHistory (updateAdmin, updateMessage) VALUES (?, ?)";
+    /*const insertHistoryQuery =
+      "INSERT INTO adminUpdateHistory (updateAdmin, updateMessage) VALUES (?, ?)";*/
     connection.query(
-      insertHistoryQuery,
+      "INSERT INTO adminUpdateHistory (updateAdmin, updateMessage) VALUES (?, ?)",
       [currentAdminname, updateMessage],
       (err, results) => {
         if (err) {
@@ -628,64 +602,68 @@ app.post("/update2023Icd10Coding", (req, res) => {
     );
   }
 
-  connection.query(checkQuery, [ICD10CM], (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("資料庫查詢錯誤");
-    }
+  connection.query(
+    "SELECT * FROM `icd-10-cm_pcs` WHERE `2023_ICD-10-CM` = ?",
+    [ICD10CM],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send("資料庫查詢錯誤");
+      }
 
-    if (results.length > 0) {
-      // 記錄存在，更新資料
-      const updateQuery =
-        "UPDATE `icd-10-cm_pcs` SET `2023_ICD-10-CM_english_name` = ?, `2023_ICD-10-CM_chinses_name` = ?, `2023_ICD-10-CM_description` = ? WHERE `2023_ICD-10-CM` = ?";
-      const description = englishName + " " + chineseName;
-      connection.query(
-        updateQuery,
-        [englishName, chineseName, description, ICD10CM],
-        (err, results) => {
-          if (err) {
-            console.error(err);
-            return res.status(500).send("無法更新資料");
+      if (results.length > 0) {
+        // 記錄存在，更新資料
+        /*const updateQuery =
+          "UPDATE `icd-10-cm_pcs` SET `2023_ICD-10-CM_english_name` = ?, `2023_ICD-10-CM_chinses_name` = ?, `2023_ICD-10-CM_description` = ? WHERE `2023_ICD-10-CM` = ?";*/
+        const description = englishName + " " + chineseName + " " + ICD10CM;
+        connection.query(
+          "UPDATE `icd-10-cm_pcs` SET `2023_ICD-10-CM_english_name` = ?, `2023_ICD-10-CM_chinses_name` = ?, `2023_ICD-10-CM_description` = ? WHERE `2023_ICD-10-CM` = ?",
+          [englishName, chineseName, description, ICD10CM],
+          (err, results) => {
+            if (err) {
+              console.error(err);
+              return res.status(500).send("無法更新資料");
+            }
+            recordAdminUpdate(
+              `更新(2023版本): 編碼: ${ICD10CM}, 英文名稱: ${englishName}, 中文名稱: ${chineseName}`
+            );
+            res.redirect("/admindashboard?message=編碼更新成功");
           }
-          recordAdminUpdate(
-            `更新(2023版本): 編碼: ${ICD10CM}, 英文名稱: ${englishName}, 中文名稱: ${chineseName}`
-          );
-          res.redirect("/admindashboard?message=編碼更新成功");
-        }
-      );
-    } else {
-      // 記錄不存在，插入新資料
-      const insertQuery =
-        "INSERT INTO `icd-10-cm_pcs` (`2023_ICD-10-CM`, `2023_ICD-10-CM_english_name`, `2023_ICD-10-CM_chinses_name`, `2023_ICD-10-CM_description`) VALUES (?, ?, ?, ?)";
-      const description = englishName + " " + chineseName;
-      connection.query(
-        insertQuery,
-        [ICD10CM, englishName, chineseName, description],
-        (err, results) => {
-          if (err) {
-            console.error(err);
-            return res.status(500).send("無法插入資料");
+        );
+      } else {
+        // 記錄不存在，插入新資料
+        /*const insertQuery =
+          "INSERT INTO `icd-10-cm_pcs` (`2023_ICD-10-CM`, `2023_ICD-10-CM_english_name`, `2023_ICD-10-CM_chinses_name`, `2023_ICD-10-CM_description`) VALUES (?, ?, ?, ?)";*/
+        const description = englishName + " " + chineseName + " " + ICD10CM;
+        connection.query(
+          "INSERT INTO `icd-10-cm_pcs` (`2023_ICD-10-CM`, `2023_ICD-10-CM_english_name`, `2023_ICD-10-CM_chinses_name`, `2023_ICD-10-CM_description`) VALUES (?, ?, ?, ?)",
+          [ICD10CM, englishName, chineseName, description],
+          (err, results) => {
+            if (err) {
+              console.error(err);
+              return res.status(500).send("無法插入資料");
+            }
+            recordAdminUpdate(
+              `插入(2023版本): 編碼: ${ICD10CM}, 英文名稱: ${englishName}, 英文名稱: ${chineseName}`
+            );
+            res.redirect("/admindashboard?message=編碼新增成功");
           }
-          recordAdminUpdate(
-            `插入(2023版本): 編碼: ${ICD10CM}, 英文名稱: ${englishName}, 英文名稱: ${chineseName}`
-          );
-          res.redirect("/admindashboard?message=編碼新增成功");
-        }
-      );
+        );
+      }
     }
-  });
+  );
 });
 
 // 管理員更新2014ICD10路由
 app.post("/update2014Icd10Coding", (req, res) => {
   const { ICD10CM2014, englishName2014, chineseName2014 } = req.body;
   const currentAdminname = req.session.adminname;
-  const checkQuery = "SELECT * FROM `icd-10-cm_pcs` WHERE `2014_ICD-10-CM` = ?";
+  /*const checkQuery = "SELECT * FROM `icd-10-cm_pcs` WHERE `2014_ICD-10-CM` = ?";*/
   function recordAdminUpdate(updateMessage) {
-    const insertHistoryQuery =
-      "INSERT INTO adminUpdateHistory (updateAdmin, updateMessage) VALUES (?, ?)";
+    /*const insertHistoryQuery =
+      "INSERT INTO adminUpdateHistory (updateAdmin, updateMessage) VALUES (?, ?)";*/
     connection.query(
-      insertHistoryQuery,
+      "INSERT INTO adminUpdateHistory (updateAdmin, updateMessage) VALUES (?, ?)",
       [currentAdminname, updateMessage],
       (err, results) => {
         if (err) {
@@ -695,53 +673,60 @@ app.post("/update2014Icd10Coding", (req, res) => {
     );
   }
 
-  connection.query(checkQuery, [ICD10CM2014], (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("資料庫查詢錯誤");
-    }
+  connection.query(
+    "SELECT * FROM `icd-10-cm_pcs` WHERE `2014_ICD-10-CM` = ?",
+    [ICD10CM2014],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send("資料庫查詢錯誤");
+      }
 
-    if (results.length > 0) {
-      const updateQuery =
-        "UPDATE `icd-10-cm_pcs` SET `2014_ICD-10-CM_english_name` = ?, `2014_ICD-10-CM_chinses_name` = ? WHERE `2014_ICD-10-CM` = ?";
-      connection.query(
-        updateQuery,
-        [englishName2014, chineseName2014, ICD10CM2014],
-        (err, results) => {
-          if (err) {
-            console.error(err);
-            return res.status(500).send("無法更新資料");
+      if (results.length > 0) {
+        /*const updateQuery =
+        "UPDATE `icd-10-cm_pcs` SET `2014_ICD-10-CM_english_name` = ?, `2014_ICD-10-CM_chinses_name` = ?, `2014_ICD-10-CM_description` = ? WHERE `2014_ICD-10-CM` = ?";*/
+        const description2014 =
+          englishName2014 + " " + chineseName2014 + " " + ICD10CM2014;
+        connection.query(
+          "UPDATE `icd-10-cm_pcs` SET `2014_ICD-10-CM_english_name` = ?, `2014_ICD-10-CM_chinses_name` = ?, `2014_ICD-10-CM_description` = ? WHERE `2014_ICD-10-CM` = ?",
+          [englishName2014, chineseName2014, description2014, ICD10CM2014],
+          (err, results) => {
+            if (err) {
+              console.error(err);
+              return res.status(500).send("無法更新資料");
+            }
+            recordAdminUpdate(
+              `更新(2014版本): 編碼: ${ICD10CM2014}, 英文名稱: ${englishName2014}, 中文名稱: ${chineseName2014}`
+            );
+            res.redirect("/admindashboard?message=編碼更新成功");
           }
-          recordAdminUpdate(
-            `更新(2014版本): 編碼: ${ICD10CM2014}, 英文名稱: ${englishName2014}, 中文名稱: ${chineseName2014}`
-          );
-          res.redirect("/admindashboard?message=編碼更新成功");
-        }
-      );
-    } else {
-      const insertQuery = `
+        );
+      } else {
+        const insertQuery = `
   INSERT INTO \`icd-10-cm_pcs\` 
   (\`2014_ICD-10-CM\`, \`2014_ICD-10-CM_english_name\`, \`2014_ICD-10-CM_chinses_name\`,\`2014_ICD-10-CM_description\` ) 
   VALUES 
   (?, ?, ?, ?)`;
 
-      const description2014 = englishName2014 + " " + chineseName2014;
-      connection.query(
-        insertQuery,
-        [ICD10CM2014, englishName2014, chineseName2014, description2014],
-        (err, results) => {
-          if (err) {
-            console.error(err);
-            return res.status(500).send("無法插入資料");
+        const description2014 =
+          englishName2014 + " " + chineseName2014 + " " + ICD10CM2014;
+        connection.query(
+          insertQuery,
+          [ICD10CM2014, englishName2014, chineseName2014, description2014],
+          (err, results) => {
+            if (err) {
+              console.error(err);
+              return res.status(500).send("無法插入資料");
+            }
+            recordAdminUpdate(
+              `新增(2014版本): 編碼: ${ICD10CM2014}, 英文名稱: ${englishName2014}, 中文名稱: ${chineseName2014}`
+            );
+            res.redirect("/admindashboard?message=編碼新增成功");
           }
-          recordAdminUpdate(
-            `新增(2014版本): 編碼: ${ICD10CM2014}, 英文名稱: ${englishName2014}, 中文名稱: ${chineseName2014}`
-          );
-          res.redirect("/admindashboard?message=編碼新增成功");
-        }
-      );
+        );
+      }
     }
-  });
+  );
 });
 
 // 刪除2023ICD10路由
