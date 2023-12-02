@@ -58,18 +58,26 @@ app.post("/login", (req, res) => {
     connection.query(query, [username], async (error, results, fields) => {
       if (error) {
         console.error(error);
-        return res.status(500).send("伺服器錯誤。");
+        return res
+          .status(500)
+          .send(
+            '<script>alert("伺服器錯誤!");window.location.href="/login";</script>'
+          );
       }
 
       const user = results[0];
       if (!user) {
-        return res.send("用戶不存在。");
+        return res.send(
+          '<script>alert("查無此用戶!");window.location.href="/login";</script>'
+        );
       }
       console.log("輸入的密碼:", password);
       console.log("資料庫的密碼:", user.password);
 
       if (password !== user.password) {
-        return res.send("密碼不正確。");
+        return res.send(
+          '<script>alert("密碼不正確!");window.location.href="/login";</script>'
+        );
       }
 
       req.session.isAuthenticated = true;
@@ -78,7 +86,11 @@ app.post("/login", (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).send("伺服器錯誤。");
+    res
+      .status(500)
+      .send(
+        '<script>alert("伺服器錯誤!");window.location.href="/login";</script>'
+      );
   }
 });
 
@@ -95,18 +107,26 @@ app.post("/adminlogin", (req, res) => {
     connection.query(query, [username], async (error, results, fields) => {
       if (error) {
         console.error(error);
-        return res.status(500).send("伺服器錯誤。");
+        return res
+          .status(500)
+          .send(
+            '<script>alert("伺服器錯誤!");window.location.href="/adminlogin";</script>'
+          );
       }
 
       const user = results[0];
       if (!user) {
-        return res.send("管理員不存在。");
+        return res.send(
+          '<script>alert("查無此管理員!");window.location.href="/adminlogin";</script>'
+        );
       }
       console.log("輸入的密碼:", password);
       console.log("資料庫的密碼:", user.password);
 
       if (password !== user.password) {
-        return res.send("密碼不正確。");
+        return res.send(
+          '<script>alert("密碼不正確!");window.location.href="/adminlogin";</script>'
+        );
       }
       req.session.adminname = user.username;
       req.session.isAdminAuthenticated = true;
@@ -114,7 +134,11 @@ app.post("/adminlogin", (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).send("伺服器錯誤。");
+    res
+      .status(500)
+      .send(
+        '<script>alert("伺服器錯誤!");window.location.href="/adminlogin";</script>'
+      );
   }
 });
 
@@ -199,11 +223,19 @@ app.post("/regis", (req, res) => {
   const { email, password, confirmPassword, verificationCode } = req.body;
 
   if (password !== confirmPassword) {
-    return res.status(400).send("密碼不一致");
+    return res
+      .status(400)
+      .send(
+        '<script>alert("密碼與再次輸入密碼不一致!");window.location.href="/register";</script>'
+      );
   }
 
   if (req.session.verificationCode !== verificationCode) {
-    return res.status(400).send("驗證碼不正確");
+    return res
+      .status(400)
+      .send(
+        '<script>alert("驗證碼不正確!");window.location.href="/register";</script>'
+      );
   }
 
   const insertQuery = "INSERT INTO users (username, password) VALUES (?, ?)";
@@ -217,7 +249,9 @@ app.post("/regis", (req, res) => {
       delete req.session.verificationCode;
     }
 
-    res.send("用戶註冊成功");
+    res.send(
+      '<script>alert("使用者註冊成功!");window.location.href="/login";</script>'
+    );
   });
 });
 
@@ -306,7 +340,11 @@ app.post("/changePassword", (req, res) => {
   }
 
   if (newpassword !== confirmNewPassword) {
-    return res.status(400).send("新密碼與確認新密碼不一致。");
+    return res
+      .status(400)
+      .send(
+        '<script>alert("新密碼與確認新密碼不一致!");window.location.href="/changePassword";</script>'
+      );
   }
 
   connection.query(
@@ -315,20 +353,36 @@ app.post("/changePassword", (req, res) => {
     (err, results) => {
       if (err) {
         console.error(err);
-        return res.status(500).send("伺服器錯誤，無法獲取用戶信息。");
+        return res
+          .status(500)
+          .send(
+            '<script>alert("資料庫查詢錯誤!");window.location.href="/changePassword";</script>'
+          );
       }
 
       if (results.length === 0) {
-        return res.status(400).send("用戶不存在。");
+        return res
+          .status(400)
+          .send(
+            '<script>alert("查無此帳號!);window.location.href="/changePassword";</script>'
+          );
       }
 
       const user = results[0];
       if (originpassword !== user.password) {
-        return res.status(400).send("原密碼不正確。");
+        return res
+          .status(400)
+          .send(
+            '<script>alert("原密碼不正確!");window.location.href="/changePassword";</script>'
+          );
       }
 
       if (originpassword === newpassword) {
-        return res.status(400).send("新密碼不能與舊密碼相同。");
+        return res
+          .status(400)
+          .send(
+            '<script>alert("原密碼不能和新密碼相同!");window.location.href="/changePassword";</script>'
+          );
       }
 
       connection.query(
@@ -339,7 +393,9 @@ app.post("/changePassword", (req, res) => {
             console.error(err);
             return res.status(500).send("無法更新密碼。");
           }
-          res.send("密碼更新成功。");
+          res.send(
+            '<script>alert("密碼更新成功!");window.location.href="/changePassword";</script>'
+          );
         }
       );
     }
@@ -594,7 +650,7 @@ app.post("/update2023Icd10Coding", (req, res) => {
           recordAdminUpdate(
             `更新(2023版本): 編碼: ${ICD10CM}, 英文名稱: ${englishName}, 中文名稱: ${chineseName}`
           );
-          res.redirect("/admindashboard?message=操作成功");
+          res.redirect("/admindashboard?message=編碼更新成功");
         }
       );
     } else {
@@ -613,7 +669,7 @@ app.post("/update2023Icd10Coding", (req, res) => {
           recordAdminUpdate(
             `插入(2023版本): 編碼: ${ICD10CM}, 英文名稱: ${englishName}, 英文名稱: ${chineseName}`
           );
-          res.redirect("/admindashboard?message=操作成功");
+          res.redirect("/admindashboard?message=編碼新增成功");
         }
       );
     }
@@ -659,7 +715,7 @@ app.post("/update2014Icd10Coding", (req, res) => {
           recordAdminUpdate(
             `更新(2014版本): 編碼: ${ICD10CM2014}, 英文名稱: ${englishName2014}, 中文名稱: ${chineseName2014}`
           );
-          res.redirect("/admindashboard?message=操作成功");
+          res.redirect("/admindashboard?message=編碼更新成功");
         }
       );
     } else {
@@ -681,7 +737,7 @@ app.post("/update2014Icd10Coding", (req, res) => {
           recordAdminUpdate(
             `新增(2014版本): 編碼: ${ICD10CM2014}, 英文名稱: ${englishName2014}, 中文名稱: ${chineseName2014}`
           );
-          res.redirect("/admindashboard?message=操作成功");
+          res.redirect("/admindashboard?message=編碼新增成功");
         }
       );
     }
