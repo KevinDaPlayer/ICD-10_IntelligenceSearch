@@ -129,3 +129,28 @@ h2 {
 .half-width input {
   max-width: 40%;
 }
+
+.nav-container {
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  background-color: #0055a4;
+  top: 60px;
+  z-index: 999;
+}
+
+.user-nav {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.nav-link {
+  margin: 0 10px;
+  color: white;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}

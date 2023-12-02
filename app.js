@@ -127,7 +127,7 @@ app.get("/admindashboard", (req, res) => {
   }
 });
 
-//MAIL發送驗證碼路由
+//MAIL發送註冊驗證碼路由
 app.post("/sendVerificationCode", async (req, res) => {
   const email = req.body.email;
   const verificationCode = generateVerificationCode();
@@ -146,6 +146,37 @@ app.post("/sendVerificationCode", async (req, res) => {
     from: "ICD10MIIA@gmail.com",
     to: email,
     subject: "ICD10查詢系統註冊帳號驗證碼",
+    text: `您的驗證碼是：${verificationCode}`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    res.json({ message: "驗證碼已發送到您的郵箱" });
+  } catch (error) {
+    console.error("郵件發送失敗:", error);
+    res.status(500).send("無法發送驗證碼");
+  }
+});
+
+//MAIL發送忘記密碼驗證碼路由
+app.post("/sendForgetPasswordVerificationCode", async (req, res) => {
+  const email = req.body.email;
+  const verificationCode = generateVerificationCode();
+
+  req.session.verificationCode = verificationCode;
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "ICD10MIIA@gmail.com",
+      pass: "fjuw dpot wmhw jecq",
+    },
+  });
+
+  const mailOptions = {
+    from: "ICD10MIIA@gmail.com",
+    to: email,
+    subject: "ICD10查詢系統忘記密碼 驗證碼",
     text: `您的驗證碼是：${verificationCode}`,
   };
 
@@ -187,6 +218,69 @@ app.post("/regis", (req, res) => {
     }
 
     res.send("用戶註冊成功");
+  });
+});
+
+// 進入忘記密碼頁面路由
+app.get("/forgetPassword", (req, res) => {
+  res.render("forgetPassword");
+});
+//忘記密碼路由
+app.post("/forgetPassword", (req, res) => {
+  const { email, password, confirmPassword, verificationCode } = req.body;
+
+  if (password !== confirmPassword) {
+    return res.send(
+      '<script>alert("新密碼不一致");window.location.href="/forgetPassword";</script>'
+    );
+  }
+
+  if (req.session.verificationCode !== verificationCode) {
+    return res.send(
+      '<script>alert("驗證碼不正確");window.location.href="/forgetPassword";</script>'
+    );
+  }
+
+  const searchQuery = "SELECT * FROM users WHERE username = ?";
+  connection.query(searchQuery, [email], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.send(
+        '<script>alert("資料庫查詢錯誤");window.location.href="/forgetPassword";</script>'
+      );
+    }
+
+    if (results.length === 0) {
+      // 用戶不存在
+      return res.send(
+        '<script>alert("用戶不存在");window.location.href="/forgetPassword";</script>'
+      );
+    }
+
+    // 用戶存在，更新密碼
+    const updateQuery = "UPDATE users SET password = ? WHERE username = ?";
+    connection.query(
+      updateQuery,
+      [password, email],
+      (updateErr, updateResults) => {
+        if (updateErr) {
+          console.error(updateErr);
+          return res.send(
+            '<script>alert("無法更新密碼");window.location.href="/forgot-password";</script>'
+          );
+        }
+
+        // 清除 session 中的驗證碼
+        if (req.session) {
+          delete req.session.verificationCode;
+        }
+
+        // 密碼更新成功
+        res.send(
+          '<script>alert("密碼變更成功");window.location.href="/login";</script>'
+        );
+      }
+    );
   });
 });
 
