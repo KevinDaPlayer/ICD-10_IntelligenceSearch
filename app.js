@@ -74,8 +74,6 @@ app.post("/login", (req, res) => {
             '<script>alert("查無此用戶!");window.location.href="/login";</script>'
           );
         }
-        console.log("輸入的密碼:", password);
-        console.log("資料庫的密碼:", user.password);
 
         if (password !== user.password) {
           return res.send(
@@ -509,7 +507,6 @@ app.get("/adminlogout", (req, res) => {
 //admin的search路由(無搜尋紀錄)
 app.post("/adminSearch", (req, res) => {
   const searchQuery = req.body.searchQuery;
-  /*const currentAdminname = req.session.adminUsername;*/
 
   performSearchInDatabase(searchQuery, (searchResults2023) => {
     performSearch2014(searchQuery, (searchResults2014) => {
@@ -612,7 +609,6 @@ app.post("/update2023Icd10Coding", (req, res) => {
       }
 
       if (results.length > 0) {
-        // 記錄存在，更新資料
         /*const updateQuery =
           "UPDATE `icd-10-cm_pcs` SET `2023_ICD-10-CM_english_name` = ?, `2023_ICD-10-CM_chinses_name` = ?, `2023_ICD-10-CM_description` = ? WHERE `2023_ICD-10-CM` = ?";*/
         const description = englishName + " " + chineseName + " " + ICD10CM;
@@ -631,7 +627,6 @@ app.post("/update2023Icd10Coding", (req, res) => {
           }
         );
       } else {
-        // 記錄不存在，插入新資料
         /*const insertQuery =
           "INSERT INTO `icd-10-cm_pcs` (`2023_ICD-10-CM`, `2023_ICD-10-CM_english_name`, `2023_ICD-10-CM_chinses_name`, `2023_ICD-10-CM_description`) VALUES (?, ?, ?, ?)";*/
         const description = englishName + " " + chineseName + " " + ICD10CM;

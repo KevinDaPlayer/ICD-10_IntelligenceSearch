@@ -137,6 +137,7 @@ h2 {
   background-color: #0055a4;
   top: 60px;
   z-index: 999;
+  position: fixed;
 }
 
 .user-nav {
