@@ -725,7 +725,7 @@ app.post("/update2014Icd10Coding", (req, res) => {
 });
 
 // 刪除2023ICD10路由
-app.post("/deleteIcd10Coding", (req, res) => {
+/*app.post("/deleteIcd10Coding", (req, res) => {
   const { ICD10CM } = req.body;
 
   const updateQuery = `
@@ -743,6 +743,91 @@ app.post("/deleteIcd10Coding", (req, res) => {
       return res.status(500).json({ message: "Error updating the record" });
     }
     if (results.affectedRows > 0) {
+      res.json({ message: "編碼刪除成功!" });
+    } else {
+      res.status(404).json({ message: "查無此編碼" });
+    }
+  });
+});*/
+// 刪除2023ICD10路由
+app.post("/deleteIcd10Coding", (req, res) => {
+  const { ICD10CM } = req.body;
+  const currentAdminname = req.session.adminname;
+
+  function recordAdminUpdate(updateMessage) {
+    connection.query(
+      "INSERT INTO adminUpdateHistory (updateAdmin, updateMessage) VALUES (?, ?)",
+      [currentAdminname, updateMessage],
+      (err, results) => {
+        if (err) {
+          console.error("無法記錄管理員更新歷史", err);
+        }
+      }
+    );
+  }
+
+  const updateQuery = `
+    UPDATE \`icd-10-cm_pcs\` 
+    SET 
+      \`2023_ICD-10-CM_english_name\` = NULL,
+      \`2023_ICD-10-CM_chinses_name\` = NULL,
+      \`2023_ICD-10-CM_description\` = NULL
+    WHERE \`2023_ICD-10-CM\` = ?
+  `;
+
+  connection.query(updateQuery, [ICD10CM], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Error updating the record" });
+    }
+
+    if (results.affectedRows > 0) {
+      // 記錄刪除的編碼到管理員更新歷史
+      recordAdminUpdate(`刪除編碼(2023): ${ICD10CM}`);
+      res.json({ message: "編碼刪除成功!" });
+    } else {
+      res.status(404).json({ message: "查無此編碼" });
+    }
+  });
+});
+
+// 刪除2014ICD10路由
+app.post("/delete2014Icd10Coding", (req, res) => {
+  const { ICD10CM2014 } = req.body;
+  const currentAdminname = req.session.adminname;
+
+  // 這個函數用於記錄管理員的更新歷史
+  function recordAdminUpdate(updateMessage) {
+    connection.query(
+      "INSERT INTO adminUpdateHistory (updateAdmin, updateMessage) VALUES (?, ?)",
+      [currentAdminname, updateMessage],
+      (err, results) => {
+        if (err) {
+          console.error("無法記錄管理員更新歷史", err);
+        }
+      }
+    );
+  }
+
+  // 更新資料庫中的記錄，將相關欄位設為 NULL
+  const updateQuery = `
+    UPDATE \`icd-10-cm_pcs\` 
+    SET 
+      \`2014_ICD-10-CM_english_name\` = NULL,
+      \`2014_ICD-10-CM_chinses_name\` = NULL,
+      \`2014_ICD-10-CM_description\` = NULL
+    WHERE \`2014_ICD-10-CM\` = ?
+  `;
+
+  connection.query(updateQuery, [ICD10CM2014], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Error updating the record" });
+    }
+
+    if (results.affectedRows > 0) {
+      // 記錄刪除的編碼到管理員更新歷史
+      recordAdminUpdate(`刪除編碼(2014): ${ICD10CM2014}`);
       res.json({ message: "編碼刪除成功!" });
     } else {
       res.status(404).json({ message: "查無此編碼" });

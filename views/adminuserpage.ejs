@@ -103,14 +103,22 @@
           </thead>
           <tbody>
             <tr>
-              <td><input type="text" name="ICD10CM" required /></td>
+              <td>
+                <input type="text" name="ICD10CM" id="ICD10CM" required />
+              </td>
               <td><input type="text" name="englishName" required /></td>
               <td><input type="text" name="chineseName" required /></td>
             </tr>
           </tbody>
         </table>
         <button type="submit" class="submit-btn">提交</button>
-        <button type="button" class="delete-btn">刪除編碼</button>
+        <button
+          type="button"
+          class="delete-btn"
+          onclick="confirmDeleteFromInput()"
+        >
+          刪除編碼
+        </button>
       </form>
     </div>
 
@@ -134,6 +142,13 @@
           </tbody>
         </table>
         <button type="submit" class="submit-btn">提交</button>
+        <button
+          type="button"
+          class="delete-btn"
+          onclick="confirmDeleteFromInput2014()"
+        >
+          刪除編碼
+        </button>
       </form>
     </div>
 
@@ -146,7 +161,7 @@
         }
       });
 
-      document.querySelector(".delete-btn").addEventListener("click", () => {
+      /* document.querySelector(".delete-btn").addEventListener("click", () => {
         const ICD10CM = document.querySelector('input[name="ICD10CM"]').value;
 
         fetch("/deleteIcd10Coding", {
@@ -171,7 +186,61 @@
               error
             );
           });
-      });
+      });*/
+
+      function confirmDeleteFromInput() {
+        const ICD10CM = document.querySelector('input[name="ICD10CM"]').value;
+        confirmDelete(ICD10CM);
+      }
+
+      function confirmDeleteFromInput2014() {
+        const ICD10CM2014 = document.querySelector(
+          'input[name="ICD10CM2014"]'
+        ).value;
+        confirmDelete2014(ICD10CM2014);
+      }
+
+      function confirmDelete(ICD10CM) {
+        if (confirm("您確定要刪除該編碼嗎？")) {
+          fetch("/deleteIcd10Coding", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ ICD10CM: ICD10CM }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              alert(data.message);
+              window.location.reload();
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              alert("刪除操作失敗");
+            });
+        }
+      }
+
+      function confirmDelete2014(ICD10CM2014) {
+        if (confirm("您確定要刪除該編碼嗎？")) {
+          fetch("/delete2014Icd10Coding", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ ICD10CM2014: ICD10CM2014 }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              alert(data.message);
+              window.location.reload();
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              alert("刪除操作失敗");
+            });
+        }
+      }
     </script>
   </body>
 </html>
