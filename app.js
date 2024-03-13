@@ -416,6 +416,10 @@ app.post("/changePassword", (req, res) => {
   );
 });
 
+app.get("/AlSearchDashboard", (req, res) => {
+  res.render("AlSearch");
+});
+
 // 主頁路由
 /*app.get("/dashboard", (req, res) => {
   if (req.session.isAuthenticated) {
