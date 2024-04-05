@@ -5,10 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../css/homepageStyle.css" />
     <title>使用者首頁</title>
+    <style>
+      body,
+      html {
+        height: 100%;
+        margin: 0;
+        font-family: Arial, sans-serif;
+      }
+
+      .container {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .search-section,
+      .results-section {
+        width: 50%;
+        padding: 20px;
+      }
+
+      #symptomForm {
+        display: flex;
+        flex-direction: column;
+      }
+
+      #symptomInput {
+        margin-bottom: 10px;
+        height: 300px;
+      }
+
+      #results {
+        border: 1px solid #000;
+        padding: 10px;
+        height: 300px; /* Adjust as needed */
+        overflow-y: auto;
+      }
+    </style>
   </head>
   <body>
     <div class="header">
-      ICD-10編碼查詢平台使用者首頁
+      ICD-10編碼查詢平台 智慧搜尋
       <form action="/logout" method="get">
         <button type="submit" class="logout-btn">登出</button>
       </form>
@@ -22,131 +58,60 @@
       </nav>
     </div>
 
-    <div class="search-container">
-      <form action="/search" method="post">
-        <input
-          type="text"
-          placeholder="Search..."
-          class="search-input"
-          name="searchQuery"
-          id="searchQuery"
-        />
-        <button type="submit" class="search-btn">搜尋</button>
-      </form>
+    <div class="container">
+      <div class="search-section">
+        <form id="symptomForm">
+          <label
+            for="symptomInput"
+            style="
+              display: block;
+              font-size: 1.5em;
+              margin-block-start: 0.83em;
+              margin-block-end: 0.83em;
+              margin-inline-start: 0px;
+              margin-inline-end: 0px;
+              font-weight: bold;
+              unicode-bidi: isolate;
+            "
+            >Enter Symptoms:</label
+          >
+          <textarea type="text" id="symptomInput" name="diagnosis"></textarea>
+          <button type="submit">Search</button>
+        </form>
+      </div>
+      <div class="results-section">
+        <h2>Search Results:</h2>
+        <div id="results"></div>
+      </div>
     </div>
 
-    <div class="results-table">
-      <% if (typeof searchResults !== "undefined") { %>
-
-      <table id="resultsTable">
-        <thead>
-          <tr>
-            <th>2023 ICD-10編碼</th>
-            <th>2023 疾病英文名稱</th>
-            <th>2023 疾病中文名稱</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <% searchResults.forEach(function(result) { %>
-
-          <tr>
-            <td>
-              <%= result['2023_ICD-10-CM'] %>
-              <button
-                class="copyButtom"
-                onclick="copyToClipboard('<%= result['2023_ICD-10-CM'] %>')"
-              >
-                複製
-              </button>
-            </td>
-            <td><%= result['2023_ICD-10-CM_english_name'] %></td>
-            <td><%= result['2023_ICD-10-CM_chinses_name'] %></td>
-          </tr>
-
-          <% }); %>
-        </tbody>
-      </table>
-
-      <% } %>
-    </div>
-
-    <div class="results-table">
-      <% if (typeof searchResults2014 !== "undefined") { %>
-
-      <table id="resultsTable">
-        <thead>
-          <tr>
-            <th>2014 ICD-10編碼</th>
-            <th>2014 疾病或狀況英文名稱</th>
-            <th>2014 疾病或狀況中文名稱</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <% searchResults2014.forEach(function(result) { %>
-
-          <tr>
-            <td>
-              <%= result['2014_ICD-10-CM'] %>
-              <button
-                class="copyButtom"
-                onclick="copyToClipboard('<%= result['2014_ICD-10-CM'] %>')"
-              >
-                複製
-              </button>
-            </td>
-            <td><%= result['2014_ICD-10-CM_english_name'] %></td>
-            <td><%= result['2014_ICD-10-CM_chinses_name'] %></td>
-          </tr>
-
-          <% }); %>
-        </tbody>
-      </table>
-
-      <% } %>
-    </div>
-
-    <!-- <div class="history-table">
-      <h3>歷史紀錄</h3>
-      <table>
-        <tr>
-          <th>搜尋歷史</th>
-        </tr>
-        <% searchHistory.forEach(function(item) { %>
-        <tr>
-          <td onclick="performSearch('<%= item %>')"><%= item %></td>
-        </tr>
-        <% }); %>
-      </table>
-    </div> -->
     <script>
-      window.addEventListener("load", () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const message = urlParams.get("message");
-        if (message) {
-          alert(message);
-        }
-      });
+      // window.addEventListener("load", () => {
+      //   const urlParams = new URLSearchParams(window.location.search);
+      //   const message = urlParams.get("message");
+      //   if (message) {
+      //     alert(message);
+      //   }
+      // });
 
-      function performSearch(query) {
-        const searchInput = document.getElementById("searchQuery");
-        const searchForm = document.querySelector(".search-container form");
+      // function performSearch(query) {
+      //   const searchInput = document.getElementById("searchQuery");
+      //   const searchForm = document.querySelector(".search-container form");
 
-        searchInput.value = query;
-        searchForm.submit();
-      }
+      //   searchInput.value = query;
+      //   searchForm.submit();
+      // }
 
-      function copyToClipboard(text) {
-        navigator.clipboard
-          .writeText(text)
-          .then(() => {
-            alert("複製成功");
-          })
-          .catch((err) => {
-            console.error("無法複製: ", err);
-          });
-      }
+      // function copyToClipboard(text) {
+      //   navigator.clipboard
+      //     .writeText(text)
+      //     .then(() => {
+      //       alert("複製成功");
+      //     })
+      //     .catch((err) => {
+      //       console.error("無法複製: ", err);
+      //     });
+      // }
     </script>
   </body>
 </html>
