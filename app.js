@@ -839,6 +839,19 @@ app.post("/delete2014Icd10Coding", (req, res) => {
   });
 });
 
+app.post("/AlSearch", (req, res) => {
+  const userInput = req.body.diagnosis;
+  axios
+    .post("http://localhost:5000/predict_icd10", userInput)
+    .then((response) => {
+      res.json(response.data);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ message: "伺服器錯誤" });
+    });
+});
+
 // 搜尋函數
 function performSearchInDatabase(query, callback) {
   const sqlQuery = `
