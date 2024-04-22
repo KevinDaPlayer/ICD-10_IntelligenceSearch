@@ -81,8 +81,13 @@
       </div>
       <div class="results-section">
         <h2>Search Results:</h2>
+        <% if (typeof results !=='undefined' && results) { %>
         <div id="results"></div>
+        <p><%= results %></p>
       </div>
+      <% } else {%>
+      <p>No results found</p>
+      <% } %>
     </div>
 
     <script></script>

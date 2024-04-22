@@ -5,6 +5,8 @@ const cors = require("cors");
 const path = require("path");
 const app = express();
 const nodemailer = require("nodemailer");
+const axios = require("axios");
+
 app.use(express.static("public"));
 
 app.set("view engine", "ejs");
@@ -417,7 +419,7 @@ app.post("/changePassword", (req, res) => {
 });
 
 app.get("/AlSearchDashboard", (req, res) => {
-  res.render("AlSearch");
+  res.render("AISearch");
 });
 
 // 主頁路由
@@ -729,31 +731,6 @@ app.post("/update2014Icd10Coding", (req, res) => {
 });
 
 // 刪除2023ICD10路由
-/*app.post("/deleteIcd10Coding", (req, res) => {
-  const { ICD10CM } = req.body;
-
-  const updateQuery = `
-  UPDATE \`icd-10-cm_pcs\` 
-  SET 
-    \`2023_ICD-10-CM_english_name\` = NULL,
-    \`2023_ICD-10-CM_chinses_name\` = NULL,
-    \`2023_ICD-10-CM_description\` = NULL
-  WHERE \`2023_ICD-10-CM\` = ?
-`;
-
-  connection.query(updateQuery, [ICD10CM], (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ message: "Error updating the record" });
-    }
-    if (results.affectedRows > 0) {
-      res.json({ message: "編碼刪除成功!" });
-    } else {
-      res.status(404).json({ message: "查無此編碼" });
-    }
-  });
-});*/
-// 刪除2023ICD10路由
 app.post("/deleteIcd10Coding", (req, res) => {
   const { ICD10CM } = req.body;
   const currentAdminname = req.session.adminname;
@@ -839,16 +816,25 @@ app.post("/delete2014Icd10Coding", (req, res) => {
   });
 });
 
-app.post("/AlSearch", (req, res) => {
+app.post("/AISearch", (req, res) => {
   const userInput = req.body.diagnosis;
   axios
-    .post("http://localhost:5000/predict_icd10", userInput)
+    .post(
+      "http://localhost:5000/predict_icd10",
+      { prompt: userInput },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    )
     .then((response) => {
-      res.json(response.data);
+      console.log("Data from Flask:", response.data.result);
+      res.render("AISearch", {
+        results: JSON.stringify(response.data.result, null, 2),
+      });
     })
     .catch((error) => {
       console.error(error);
-      res.status(500).json({ message: "伺服器錯誤" });
+      res.status(500).render("AISearch", { results: "伺服器錯誤" });
     });
 });
 
