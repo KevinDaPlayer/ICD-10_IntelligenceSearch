@@ -3,8 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-   
-    <link rel="stylesheet" href="../css/AISearch.css" /> 
+    <link rel="stylesheet" href="../css/homepageStyle" /> 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
     <title>使用者首頁</title>
     <style>
@@ -53,6 +52,7 @@
         color:  white;
         background-color:  #003366;
         border-color: #003366; 
+        margin-right: 10px;
       }
 
       .btn-search {
@@ -94,7 +94,8 @@
       }
 
       .bg-image{
-        background: url(../image/fjulogo.png);
+        background: url(../image/bg.jpg);
+        background-size: 100%;
         background-repeat: no-repeat;
         background-color: white;
         background-position: right bottom;
@@ -135,7 +136,7 @@
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
           <a href="/dashboard" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
             <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>
-            <label>ICD-10編碼查詢平台</label>
+            <label>ICD-10編碼查詢平台 智慧搜尋頁面</label>
           </a>
           
   
@@ -172,52 +173,60 @@
     <header class="shadow p-3 bg-underheaderblue text-white "></header>
     
     
-    
-    <div class="container">
-      <div class="search-section">
-        <form id="symptomForm" action="/AISearch" method="post">
-          <label
-            for="symptomInput"
-            style="
-              display: block;
-              font-size: 1.75em;
-              margin-block-start: 0.83em;
-              margin-block-end: 0.83em;
-              margin-inline-start: 0px;
-              margin-inline-end: 0px;
-              font-weight: bold;
-              unicode-bidi: isolate;
-            "
-            >Enter Symptoms:</label
-          >
-          <textarea type="text" id="symptomInput" name="diagnosis"></textarea>
-          <button type="submit" class="btn btn-search btn-outline-primary me-2">Search</button>
-        </form>
+    <body>
+      <div class="container">
+        <div class="search-section">
+          <form id="symptomForm" action="/AISearch" method="post">
+            <label
+              for="symptomInput"
+              style="
+                display: block;
+                font-size: 2em;
+                margin-block-start: 0.83em;
+                margin-block-end: 0.5em;
+                margin-inline-start: 0px;
+                margin-inline-end: 0px;
+                font-weight: lighter;
+                unicode-bidi: isolate;
+                color: #2c2c2c;
+                background-color: #f7f7f7;
+                padding: 10px;
+                border-radius: 5px;
+              "
+              >Enter Symptoms:</label
+            >
+            <textarea type="text" id="symptomInput" name="diagnosis"></textarea>
+            <button type="submit" class="btn btn-search btn-outline-primary me-2">Search</button>
+          </form>
+        </div>
+        <div class="results-section">
+          <label 
+          style="
+            display: block;
+            font-size: 2em;
+            margin-block-start: 0.83em;
+            margin-block-end: 0.5em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+            font-weight: lighter;
+            unicode-bidi: isolate;
+            color: #2c2c2c;
+            background-color: #f7f7f7;
+            padding: 10px;
+            border-radius: 5px;
+        ">Search Results:</label>
+          <% if (typeof results !=='undefined' && results) { %>
+          <div id="results"></div>
+          <p><%= results %></p>
+        </div>
+        <% } else {%>
+        <p>No results found</p>
+        <% } %>
       </div>
-      <div class="results-section">
-        <label 
-        style="
-          display: block;
-          font-size: 1.75em;
-          margin-block-start: 0.83em;
-          margin-block-end: 0.83em;
-          margin-inline-start: 0px;
-          margin-inline-end: 0px;
-          font-weight: bold;
-          unicode-bidi: isolate;
-      ">Search Results:</label>
-        <% if (typeof results !=='undefined' && results) { %>
-        <div id="results"></div>
-        <p><%= results %></p>
+
+        <script></script>
       </div>
-      <% } else {%>
-      <p>No results found</p>
-      <% } %>
-    </div>
-
-    <script></script>
-  </div>
-
+    </body>
   <footer class="footer mt-auto py-3 bg-light d-flex justify-content-center align-items-center">
     <div class="container-footer">
       <div class="text-muted">輔仁大學 醫學資訊與創新應用學士學位學程</div>

@@ -1,8 +1,8 @@
-body {
+/* body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding-top: 60px;
-}
+} */
 
 .header {
   background-color: #003366;
@@ -45,13 +45,15 @@ body {
   justify-content: center;
   margin: 20px 0;
   margin-top: 50px;
+  width: 100%;
+  
 }
 
 .search-input {
   padding: 10px;
-  margin-right: 10px;
-  width: 50%;
-  border: 1px solid #ccc;
+  margin-right: 20px;
+  width: 60%;
+  border: 1px solid #00000066;
   border-radius: 4px;
 }
 
