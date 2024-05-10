@@ -839,33 +839,80 @@ app.post("/AISearch", (req, res) => {
 });
 
 // 搜尋函數
+// function performSearchInDatabase(query, callback) {
+//   const sqlQuery = `
+//   SELECT
+//     \`2023_ICD-10-CM\`,
+//     \`2023_ICD-10-CM_english_name\`,
+//     \`2023_ICD-10-CM_chinses_name\`
+//   FROM \`icd-10-cm_pcs\`
+//   WHERE \`2023_ICD-10-CM_description\` LIKE '%${query}%'
+// `;
+
+//   connection.query(sqlQuery, (error, results) => {
+//     if (error) throw error;
+//     callback(results);
+//   });
+// }
+
 function performSearchInDatabase(query, callback) {
+  const keywords = query.split(" ");
+  const likeSql = keywords.map(
+    (keyword) => `\`2023_ICD-10-CM_description\` LIKE ?`
+  );
+  const param = keywords.map((keyword) => `%${keyword}%`);
+  const allSql = likeSql.join(" AND ");
+
   const sqlQuery = `
   SELECT
     \`2023_ICD-10-CM\`,
     \`2023_ICD-10-CM_english_name\`,
     \`2023_ICD-10-CM_chinses_name\`
   FROM \`icd-10-cm_pcs\`
-  WHERE \`2023_ICD-10-CM_description\` LIKE '%${query}%'
+  WHERE ${allSql}
 `;
 
-  connection.query(sqlQuery, (error, results) => {
+  connection.query(sqlQuery, param, (error, results) => {
     if (error) throw error;
     callback(results);
   });
 }
 // 2014搜尋函數
+// function performSearch2014(query, callback) {
+//   const sqlQuery = `
+//     SELECT
+//       \`2014_ICD-10-CM\`,
+//       \`2014_ICD-10-CM_english_name\`,
+//       \`2014_ICD-10-CM_chinses_name\`
+//     FROM \`icd-10-cm_pcs\`
+//     WHERE \`2014_ICD-10-CM_description\` LIKE '%${query}%'
+//   `;
+
+//   connection.query(sqlQuery, (error, results) => {
+//     if (error) throw error;
+//     callback(results);
+//   });
+// }
+
 function performSearch2014(query, callback) {
+  const keywords = query.split(" ");
+  const likeSql = keywords.map(
+    (keywords) => `\`2014_ICD-10-CM_description\` LIKE ?`
+  );
+  const param = keywords.map((keyword) => `%${keyword}%`);
+
+  const allSql = likeSql.join(" AND ");
+
   const sqlQuery = `
     SELECT
       \`2014_ICD-10-CM\`,
       \`2014_ICD-10-CM_english_name\`,
       \`2014_ICD-10-CM_chinses_name\`
     FROM \`icd-10-cm_pcs\`
-    WHERE \`2014_ICD-10-CM_description\` LIKE '%${query}%'
+    WHERE ${allSql}
   `;
 
-  connection.query(sqlQuery, (error, results) => {
+  connection.query(sqlQuery, param, (error, results) => {
     if (error) throw error;
     callback(results);
   });
