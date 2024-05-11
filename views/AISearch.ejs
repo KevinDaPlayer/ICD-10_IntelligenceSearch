@@ -3,8 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/homepageStyle" /> 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+    <link rel="stylesheet" href="../css/homepageStyle" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
+      crossorigin="anonymous"
+    />
     <title>使用者首頁</title>
     <style>
       body,
@@ -40,7 +45,6 @@
         padding: 10px;
         height: 300px;
         overflow-y: auto;
-
       }
 
       .nav1-container {
@@ -49,25 +53,25 @@
 
       .btn-primary {
         margin: 0 0px;
-        color:  white;
-        background-color:  #003366;
-        border-color: #003366; 
+        color: white;
+        background-color: #003366;
+        border-color: #003366;
         margin-right: 10px;
       }
 
       .btn-search {
         margin: 0 0px;
-        color:  white;
-        background-color:  #007bff;
-        border-color: #007bff; 
+        color: white;
+        background-color: #007bff;
+        border-color: #007bff;
       }
 
       #symptomInput {
-        resize: none; 
-        width: 600px; 
-        height: 300px; 
+        resize: none;
+        width: 600px;
+        height: 300px;
         margin-bottom: 10px;
-    }
+      }
 
       .header {
         background-color: #003366;
@@ -78,22 +82,21 @@
         top: 0;
         width: 100%;
         z-index: 1000;
-      
-    }
-      
+      }
+
       .container1 {
         justify-content: space-between;
       }
-      
-      .bg-headerblue{
+
+      .bg-headerblue {
         background-color: #003366;
       }
 
-      .bg-underheaderblue{
+      .bg-underheaderblue {
         background-color: #0055a4;
       }
 
-      .bg-image{
+      .bg-image {
         background: url(../image/bg.jpg);
         background-size: 100%;
         background-repeat: no-repeat;
@@ -106,12 +109,14 @@
         max-width: 680px;
         padding: 0 15px;
       }
-
-      
     </style>
   </head>
   <body>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+      crossorigin="anonymous"
+    ></script>
     <!-- <div class="header">
       ICD-10編碼查詢平台 智慧搜尋
       <form action="/logout" method="get">
@@ -130,49 +135,88 @@
         </ul>
       </header>
     </div> -->
-    
-    <header class="shadow-lg p-3 bg-headerblue text-white ">
+
+    <header class="shadow-lg p-3 bg-headerblue text-white">
       <div class="container1">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-          <a href="/dashboard" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-            <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>
+        <div
+          class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"
+        >
+          <a
+            href="/dashboard"
+            class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none"
+          >
+            <svg
+              class="bi me-2"
+              width="40"
+              height="32"
+              role="img"
+              aria-label="Bootstrap"
+            >
+              <use xlink:href="#bootstrap" />
+            </svg>
             <label>ICD-10編碼查詢平台 智慧搜尋頁面</label>
           </a>
-          
-  
-          <ul class="nav col-12 col-lg-auto mx-auto mb-2 justify-content-center mb-md-0">
 
-            <li class="nav-item"><button type="button" class="btn btn-primary" onclick="window.location.href='/dashboard'">首頁</button></li>
+          <ul
+            class="nav col-12 col-lg-auto mx-auto mb-2 justify-content-center mb-md-0"
+          >
+            <li class="nav-item">
+              <button
+                type="button"
+                class="btn btn-primary"
+                onclick="window.location.href='/dashboard'"
+              >
+                首頁
+              </button>
+            </li>
 
             <div class="dropdown">
-              <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              <button
+                class="btn btn-primary dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
                 搜尋模式
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li><a class="dropdown-item" href="/dashboard">輔助搜尋</a></li>
-                <li><a class="dropdown-item" href="/AlSearchDashboard">智慧搜尋</a></li>
+                <li>
+                  <a class="dropdown-item" href="/AlSearchDashboard"
+                    >智慧搜尋</a
+                  >
+                </li>
               </ul>
             </div>
 
-            <li class="nav-item"><button type="button" class="btn btn-primary" onclick="window.location.href='/changePassword'">更改密碼</button></li>
+            <li class="nav-item">
+              <button
+                type="button"
+                class="btn btn-primary"
+                onclick="window.location.href='/changePassword'"
+              >
+                更改密碼
+              </button>
+            </li>
             <!-- <li><a href="/dashboard" class="nav-link px-2 text-white">首頁</a></li>
             <li><a href="/changePassword" class="nav-link px-2 text-white">更改密碼</a></li>
             <li><a href="/AlSearchDashboard" class="nav-link px-2 text-white">智慧搜尋</a></li> -->
           </ul>
 
-  
           <div class="text-end">
             <form action="/logout" method="get">
-              <button type="submit" class="btn btn-outline-light me-2">登出</button>
+              <button type="submit" class="btn btn-outline-light me-2">
+                登出
+              </button>
             </form>
           </div>
         </div>
       </div>
     </header>
 
-    <header class="shadow p-3 bg-underheaderblue text-white "></header>
-    
-    
+    <header class="shadow p-3 bg-underheaderblue text-white"></header>
+
     <body>
       <div class="container">
         <div class="search-section">
@@ -196,44 +240,67 @@
               >Enter Symptoms:</label
             >
             <textarea type="text" id="symptomInput" name="diagnosis"></textarea>
-            <button type="submit" class="btn btn-search btn-outline-primary me-2">Search</button>
+            <button
+              type="submit"
+              class="btn btn-search btn-outline-primary me-2"
+            >
+              Search
+            </button>
           </form>
         </div>
         <div class="results-section">
-          <label 
-          style="
-            display: block;
-            font-size: 2em;
-            margin-block-start: 0.83em;
-            margin-block-end: 0.5em;
-            margin-inline-start: 0px;
-            margin-inline-end: 0px;
-            font-weight: lighter;
-            unicode-bidi: isolate;
-            color: #2c2c2c;
-            background-color: #f7f7f7;
-            padding: 10px;
-            border-radius: 5px;
-        ">Search Results:</label>
-          <% if (typeof results !=='undefined' && results) { %>
-          <div id="results"></div>
-          <p><%= results %></p>
+          <label
+            style="
+              display: block;
+              font-size: 2em;
+              margin-block-start: 0.83em;
+              margin-block-end: 0.5em;
+              margin-inline-start: 0px;
+              margin-inline-end: 0px;
+              font-weight: lighter;
+              unicode-bidi: isolate;
+              color: #2c2c2c;
+              background-color: #f7f7f7;
+              padding: 10px;
+              border-radius: 5px;
+            "
+            >Search Results:</label
+          >
+          <% if (typeof results !=='undefined' && results.length > 0) { %>
+          <table class="table table-striped table-hover">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">ICD-10 Code</th>
+                <th scope="col">Description</th>
+                <th scope="col">Detail</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% results.forEach(function(prediction) { %>
+              <tr>
+                <td><%= prediction.code %></td>
+                <td><%= prediction.description %></td>
+                <td><%= prediction.detail %></td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+          <% } else {%>
+          <p>No results found</p>
+          <% } %>
         </div>
-        <% } else {%>
-        <p>No results found</p>
-        <% } %>
-      </div>
 
         <script></script>
       </div>
     </body>
-  <footer class="footer mt-auto py-3 bg-light d-flex justify-content-center align-items-center">
-    <div class="container-footer">
-      <div class="text-muted">輔仁大學 醫學資訊與創新應用學士學位學程</div>
-      <div class="text-muted">Kevin Hung</div>
-      <div class="text-muted">V2.3.26</div>
-    </div>
-  </footer>
-
+    <footer
+      class="footer mt-auto py-3 bg-light d-flex justify-content-center align-items-center"
+    >
+      <div class="container-footer">
+        <div class="text-muted">輔仁大學 醫學資訊與創新應用學士學位學程</div>
+        <div class="text-muted">Kevin Hung</div>
+        <div class="text-muted">V2.3.26</div>
+      </div>
+    </footer>
   </body>
 </html>

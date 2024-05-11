@@ -828,9 +828,21 @@ app.post("/AISearch", (req, res) => {
     )
     .then((response) => {
       console.log("Data from Flask:", response.data.result);
-      res.render("AISearch", {
-        results: JSON.stringify(response.data.result, null, 2),
-      });
+
+      const predictText = response.data.result;
+      const regex = /\d+\.\s([^:]+)\s:\s([^;]+);\s(.+)/g;
+      const predictions = [];
+
+      let matches;
+      while ((matches = regex.exec(predictText)) !== null) {
+        predictions.push({
+          code: matches[1].trim(),
+          description: matches[2].trim(),
+          detail: matches[3].trim(),
+        });
+      }
+
+      res.render("AISearch", { results: predictions });
     })
     .catch((error) => {
       console.error(error);
