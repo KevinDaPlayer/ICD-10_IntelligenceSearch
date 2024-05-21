@@ -9,6 +9,8 @@
   margin: 0;
 } */
 
+/* --- */
+
 .header {
   background-color: #003366;
   color: white;
@@ -64,6 +66,8 @@ h2 {
   margin-top: 20px;
 }
 
+/* --- */
+
 /* .form-actions input[type="submit"] { 
   padding: 10px 20px;
   background-color: #4caf50;
@@ -72,6 +76,8 @@ h2 {
   border-radius: 5px;
   cursor: pointer;
 }*/
+
+/* --- */
 
 .link-button {
   display: inline-block;
