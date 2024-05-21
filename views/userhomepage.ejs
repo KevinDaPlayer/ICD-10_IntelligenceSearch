@@ -94,10 +94,11 @@
         background-color: #0055a4;
       }
 
-      .bg-image{
-        background: url(../image/fjulogo.png);
+      .bg-image {
+        background: url(../image/bg.jpg);
+        background-size: 100%;
         background-repeat: no-repeat;
-        background-color: white;
+        background-color: rgb(246, 246, 246);
         background-position: right bottom;
       }
 
@@ -107,19 +108,41 @@
         padding: 0 15px;
       }
 
-.search-container form {
-  display: flex; /* 使用 Flexbox 布局 */
-}
+      .table-bg{
+        background-color: rgb(255, 255, 255);
+      }
 
-.form-control {
-  flex: 1; /* 让输入框自动填充剩余空间 */
-  margin-right: 20px;
-}
+      .wrap{
+        overflow:hidden;
+        border-radius:10px 10px 10px 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.35);
+      }
 
+      .h3-code{
+        text-align: left;
+      }
+      
+      /* tr:last-of-type{
+        border-bottom: 2px solid #2e2e2e;
+      } */
+
+      .search-container form {
+        display: flex; /* 使用 Flexbox 布局 */
+      }
+
+      .form-control {
+        flex: 1; /* 让输入框自动填充剩余空间 */
+        margin-right: 20px;
+      }
+
+      /* 本頁面獨立ＣＳＳ */
+      .btn-copy{
+        border-radius:20px 20px 20px 20px;
+      }
       
     </style>
   </head>
-  <body>
+  <body class="bg-image">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
 
     <header class="shadow-lg p-3 bg-headerblue text-white ">
@@ -197,13 +220,16 @@
 
     <div class="results-table">
       <% if (typeof searchResults !== "undefined") { %>
-
-      <table id="resultsTable">
+      <h3 class="h3-code">2023 ICD-10</h3>
+      <table class="table table-hover" id="resultsTable">
         <thead>
           <tr>
-            <th>2023 ICD-10編碼</th>
-            <th>2023 疾病英文名稱</th>
-            <th>2023 疾病中文名稱</th>
+            <th>
+              <div>ICD-10</div>
+              <div>編碼</div>
+            </th>
+            <th>疾病英文名稱</th>
+            <th>疾病中文名稱</th>
           </tr>
         </thead>
 
@@ -212,9 +238,11 @@
 
           <tr>
             <td>
-              <%= result['2023_ICD-10-CM'] %>
+              <div>
+                <%= result['2023_ICD-10-CM'] %>
+              </div>
               <button
-                class="copyButtom"
+                class="btn btn-outline-secondary btn-sm btn-copy"
                 onclick="copyToClipboard('<%= result['2023_ICD-10-CM'] %>')"
               >
                 複製
@@ -233,24 +261,29 @@
 
     <div class="results-table">
       <% if (typeof searchResults2014 !== "undefined") { %>
-
-      <table id="resultsTable">
-        <thead>
-          <tr>
-            <th>2014 ICD-10編碼</th>
-            <th>2014 疾病或狀況英文名稱</th>
-            <th>2014 疾病或狀況中文名稱</th>
-          </tr>
-        </thead>
+        <h3 class="h3-code">2014 ICD-10</h3>
+        <table class="table table-hover" id="resultsTable">
+          <thead>
+            <tr>
+              <th>
+                <div>ICD-10</div>
+                <div>編碼</div>
+              </th>
+              <th>疾病英文名稱</th>
+              <th>疾病中文名稱</th>
+            </tr>
+          </thead>
 
         <tbody>
           <% searchResults2014.forEach(function(result) { %>
 
           <tr>
             <td>
-              <%= result['2014_ICD-10-CM'] %>
+              <div>
+                <%= result['2014_ICD-10-CM'] %>
+              </div>
               <button
-                class="copyButtom"
+                class="btn btn-outline-secondary btn-sm btn-copy"
                 onclick="copyToClipboard('<%= result['2014_ICD-10-CM'] %>')"
               >
                 複製
@@ -269,15 +302,19 @@
 
     <div class="history-table">
       <h3>歷史紀錄</h3>
-      <table>
-        <tr>
-          <th>搜尋歷史</th>
-        </tr>
-        <% searchHistory.forEach(function(item) { %>
-        <tr>
-          <td onclick="performSearch('<%= item %>')"><%= item %></td>
-        </tr>
-        <% }); %>
+      <table class="table table-bg table-striped table-hover wrap">
+        <thead>
+          <tr>
+            <th>搜尋歷史</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% searchHistory.forEach(function(item) { %>
+          <tr>
+            <td onclick="performSearch('<%= item %>')"><%= item %></td>
+          </tr>
+          <% }); %>
+        </tbody>
       </table>
     </div>
     <script>
