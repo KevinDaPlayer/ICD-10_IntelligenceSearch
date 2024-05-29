@@ -139,6 +139,15 @@
         margin-right: 20px;
       }
 
+      .icon {
+      width: 40px;
+      height: 32px;
+      background: url(../image/Icd10codeslogo.png);
+      background-color: rgb(246, 246, 246);
+      background-size: cover;
+      background-position: center;
+      border-radius: 0.5em 0.5em 0.5em 0.5em;
+    }
     </style>
   </head>
   <body class="bg-image">
@@ -157,7 +166,7 @@
             href="/dashboard"
             class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none"
           >
-            <svg
+            <!-- <svg
               class="bi me-2"
               width="40"
               height="32"
@@ -165,8 +174,9 @@
               aria-label="Bootstrap"
             >
               <use xlink:href="#bootstrap" />
-            </svg>
-            <label>ICD-10編碼查詢平台  更新歷史頁</label>
+            </svg> -->
+            <div class="icon bi me-2"></div>
+            <label style="font-size: 22px;">ICD-10編碼查詢平台  更新歷史頁</label>
           </a>
 
           <ul
@@ -177,6 +187,7 @@
                 type="button"
                 class="btn btn-primary"
                 onclick="window.location.href='/admindashboard'"
+                style="font-size: 18px;"
               >
                 首頁
               </button>
@@ -187,6 +198,7 @@
                 type="button"
                 class="btn btn-primary"
                 onclick="window.location.href='/adminUpdateHistory'"
+                style="font-size: 18px;"
               >
               編碼更新紀錄
               </button>
@@ -195,7 +207,7 @@
 
           <div class="text-end">
             <form action="/logout" method="get">
-              <button type="submit" class="btn btn-outline-light me-2">
+              <button type="submit" class="btn btn-outline-light me-2" style="font-size: 18px;">
                 登出
               </button>
             </form>
