@@ -109,6 +109,15 @@
         max-width: 680px;
         padding: 0 15px;
       }
+      .icon {
+      width: 40px;
+      height: 32px;
+      background: url(../image/Icd10codeslogo.png);
+      background-color: rgb(246, 246, 246);
+      background-size: cover;
+      background-position: center;
+      border-radius: 0.5em 0.5em 0.5em 0.5em;
+    }
     </style>
   </head>
   <body class="bg-image">
@@ -145,7 +154,7 @@
             href="/dashboard"
             class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none"
           >
-            <svg
+            <!-- <svg
               class="bi me-2"
               width="40"
               height="32"
@@ -153,8 +162,9 @@
               aria-label="Bootstrap"
             >
               <use xlink:href="#bootstrap" />
-            </svg>
-            <label>ICD-10編碼查詢平台 智慧搜尋頁面</label>
+            </svg> -->
+            <div class="icon bi me-2"></div>
+            <label style="font-size: 22px;">ICD-10編碼查詢平台 智慧搜尋頁面</label>
           </a>
 
           <ul
@@ -165,6 +175,7 @@
                 type="button"
                 class="btn btn-primary"
                 onclick="window.location.href='/dashboard'"
+                style="font-size: 18px;"
               >
                 首頁
               </button>
@@ -177,13 +188,14 @@
                 id="dropdownMenuButton1"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
+                style="font-size: 18px;"
               >
                 搜尋模式
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" href="/dashboard">輔助搜尋</a></li>
+                <li><a class="dropdown-item" style="font-size: 18px;" href="/dashboard">輔助搜尋</a></li>
                 <li>
-                  <a class="dropdown-item" href="/AlSearchDashboard"
+                  <a class="dropdown-item" style="font-size: 18px;" href="/AlSearchDashboard"
                     >智慧搜尋</a
                   >
                 </li>
@@ -195,6 +207,7 @@
                 type="button"
                 class="btn btn-primary"
                 onclick="window.location.href='/changePassword'"
+                style="font-size: 18px;"
               >
                 更改密碼
               </button>
@@ -206,7 +219,7 @@
 
           <div class="text-end">
             <form action="/logout" method="get">
-              <button type="submit" class="btn btn-outline-light me-2">
+              <button type="submit" class="btn btn-outline-light me-2" style="font-size: 18px;">
                 登出
               </button>
             </form>
