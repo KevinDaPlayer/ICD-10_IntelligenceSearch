@@ -4,7 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../css/homepageStyle.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
+      crossorigin="anonymous"
+    />
     <title>使用者首頁</title>
 
     <style>
@@ -41,7 +46,6 @@
         padding: 10px;
         height: 300px;
         overflow-y: auto;
-
       }
 
       .nav1-container {
@@ -50,25 +54,25 @@
 
       .btn-primary {
         margin: 0 0px;
-        color:  white;
-        background-color:  #003366;
-        border-color: #003366; 
+        color: white;
+        background-color: #003366;
+        border-color: #003366;
         margin-right: 10px;
       }
 
       .btn-search {
         margin: 0 0px;
-        color:  white;
-        background-color:  #007bff;
-        border-color: #007bff; 
+        color: white;
+        background-color: #007bff;
+        border-color: #007bff;
       }
 
       #symptomInput {
-        resize: none; 
-        width: 600px; 
-        height: 300px; 
+        resize: none;
+        width: 600px;
+        height: 300px;
         margin-bottom: 10px;
-    }
+      }
 
       .header {
         background-color: #003366;
@@ -79,18 +83,17 @@
         top: 0;
         width: 100%;
         z-index: 1000;
-      
-    }
-      
+      }
+
       .container1 {
         justify-content: space-between;
       }
-      
-      .bg-headerblue{
+
+      .bg-headerblue {
         background-color: #003366;
       }
 
-      .bg-underheaderblue{
+      .bg-underheaderblue {
         background-color: #0055a4;
       }
 
@@ -108,20 +111,20 @@
         padding: 0 15px;
       }
 
-      .table-bg{
+      .table-bg {
         background-color: rgb(255, 255, 255);
       }
 
-      .wrap{
-        overflow:hidden;
-        border-radius:10px 10px 10px 10px;
+      .wrap {
+        overflow: hidden;
+        border-radius: 10px 10px 10px 10px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.35);
       }
 
-      .h3-code{
+      .h3-code {
         text-align: left;
       }
-      
+
       /* tr:last-of-type{
         border-bottom: 2px solid #2e2e2e;
       } */
@@ -136,195 +139,203 @@
       }
 
       /* 本頁面獨立ＣＳＳ */
-      .btn-copy{
-        border-radius:20px 20px 20px 20px;
+      .btn-copy {
+        border-radius: 20px 20px 20px 20px;
       }
       /* ----------------search bar */
-      .search-bar input,
-      .search-btn, 
-      .search-btn:before, 
-      .search-btn:after {
-        transition: all 0.25s ease-out;
-      }
-      .search-bar input,
-      .search-btn {
-        width: 3em;
-        height: 3em;
-      }
-      .search-bar input:invalid:not(:focus),
-      .search-btn {
-        cursor: pointer;
-      }
-      .search-bar,
-      .search-bar input:focus,
-      .search-bar input:valid  {
-        width: 100%;
-      }
-      .search-bar input:focus,
-      .search-bar input:not(:focus) + .search-btn:focus {
-        outline: transparent;
-      }
       .search-bar {
         margin: auto;
         padding: 1.5em;
         justify-content: center;
         max-width: 30em;
+        display: flex; /* 讓 search-bar 直接顯示 */
       }
+
       .search-bar input {
         background: transparent;
         border-radius: 1.5em;
         box-shadow: 0 0 0 0.4em #171717 inset;
         padding: 0.75em;
-        transform: translate(0.5em,0.5em) scale(0.5);
-        transform-origin: 100% 0;
         -webkit-appearance: none;
         -moz-appearance: none;
         appearance: none;
+        flex: 1;
+        margin-right: 10px; /* 讓 input 和按鈕之間有間距 */
       }
-      .search-bar input::-webkit-search-decoration {
-        -webkit-appearance: none;
-      }
-      .search-bar input:focus,
-      .search-bar input:valid {
-        background: #fff;
-        border-radius: 0.375em 0 0 0.375em;
-        box-shadow: 0 0 0 0.1em #d9d9d9 inset;
-        transform: scale(1);
-      }
+
       .search-btn {
         background: #171717;
-        border-radius: 0 0.75em 0.75em 0 / 0 1.5em 1.5em 0;
-        padding: 0.75em;
-        position: relative;
-        transform: translate(0.25em,0.25em) rotate(45deg) scale(0.25,0.125);
-        transform-origin: 0 50%;
+        border-radius: 0 1.5em 1.5em 0;
+        padding: 0.75em 1.5em;
+        border: none;
+        color: white;
+        cursor: pointer;
+        display: inline-block;
+        transform: none;
+        width: auto;
+        height: auto;
       }
-      .search-btn:before, 
-      .search-btn:after {
-        content: "";
-        display: block;
-        opacity: 0;
-        position: absolute;
-      }
-      .search-btn:before {
-        border-radius: 50%;
-        box-shadow: 0 0 0 0.2em #f1f1f1 inset;
-        top: 0.75em;
-        left: 0.75em;
-        width: 1.2em;
-        height: 1.2em;
-      }
-      .search-btn:after {
-        background: #f1f1f1;
-        border-radius: 0 0.25em 0.25em 0;
-        top: 51%;
-        left: 51%;
-        width: 0.75em;
-        height: 0.25em;
-        transform: translate(0.2em,0) rotate(45deg);
-        transform-origin: 0 50%;
-      }
+
       .search-btn span {
         display: inline-block;
-        overflow: hidden;
-        width: 1px;
-        height: 1px;
+        overflow: visible;
       }
 
-      /* Active state */
-      .search-bar input:focus + .search-btn,
-      .search-bar input:valid + .search-btn {
-        background: #2762f3;
-        border-radius: 0 0.375em 0.375em 0;
-        transform: scale(1);
-      }
-      .search-bar input:focus + .search-btn:before, 
-      .search-bar input:focus + .search-btn:after,
-      .search-bar input:valid + .search-btn:before, 
-      .search-bar input:valid + .search-btn:after {
-        opacity: 1;
-      }
-      .search-bar input:focus + .search-btn:hover,
-      .search-bar input:valid + .search-btn:hover,
-      .search-bar input:valid:not(:focus) + .search-btn:focus {
-        background: #0c48db;
-      }
-      .search-bar input:focus + .search-btn:active,
-      .search-bar input:valid + .search-btn:active {
-        transform: translateY(1px);
+      /* 移除不需要的樣式 */
+      .search-bar input:invalid:not(:focus),
+      .search-bar input:focus,
+      .search-bar input:valid {
+        width: auto;
+        transform: none;
       }
 
-      @media screen and (prefers-color-scheme: dark) {
-        body, input {
-          color: #f1f1f1;
-        }
-        body {
-          background: #171717;
-        }
-        .search-bar input {
-          box-shadow: 0 0 0 0.4em #f1f1f1 inset;
-        }
-        .search-bar input:focus,
-        .search-bar input:valid {
-          background: #3d3d3d;
-          box-shadow: 0 0 0 0.1em #3d3d3d inset;
-        }
-        .search-btn {
-          background: #f1f1f1;
-        }
+      /* --------下拉式表單 */
+      .custom-dropdown-container {
+        position: relative;
+        display: inline-block;
       }
+
+      .custom-dropdown-btn {
+        background: #000000;
+        border: none;
+        color: white;
+        padding: 0.75em 1.5em;
+        cursor: pointer;
+        border-radius: 1.5em 0 0 1.5em;
+        margin-right: 10px;
+      }
+
+      .custom-dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f1f1f1;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+      }
+
+      .custom-dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+      }
+
+      .custom-dropdown-content a:hover {
+        background-color: #ddd;
+      }
+
+      .custom-dropdown-container:hover .custom-dropdown-content {
+        display: block;
+      }
+
       .icon {
-      width: 40px;
-      height: 32px;
-      background: url(../image/Icd10codeslogo.png);
-      background-color: rgb(246, 246, 246);
-      background-size: cover;
-      background-position: center;
-      border-radius: 0.5em 0.5em 0.5em 0.5em;
-    }
+        width: 40px;
+        height: 32px;
+        background: url(../image/Icd10codeslogo.png);
+        background-color: rgb(246, 246, 246);
+        background-size: cover;
+        background-position: center;
+        border-radius: 0.5em 0.5em 0.5em 0.5em;
+      }
     </style>
   </head>
   <body class="bg-image">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+      crossorigin="anonymous"
+    ></script>
 
-    <header class="shadow-lg p-3 bg-headerblue text-white ">
+    <header class="shadow-lg p-3 bg-headerblue text-white">
       <div class="container1">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-          <a href="/dashboard" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+        <div
+          class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"
+        >
+          <a
+            href="/dashboard"
+            class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none"
+          >
             <!-- <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg> -->
             <div class="icon bi me-2"></div>
-            <label style="font-size: 22px;">ICD-10編碼查詢平台 輔助查詢頁面</label>
+            <label style="font-size: 22px"
+              >ICD-10編碼查詢平台 輔助查詢頁面</label
+            >
           </a>
-          
-  
-          <ul class="nav col-12 col-lg-auto mx-auto mb-2 justify-content-center mb-md-0">
 
-            <li class="nav-item"><button type="button" class="btn btn-primary" style="font-size: 18px;" onclick="window.location.href='/dashboard'">首頁</button></li>
+          <ul
+            class="nav col-12 col-lg-auto mx-auto mb-2 justify-content-center mb-md-0"
+          >
+            <li class="nav-item">
+              <button
+                type="button"
+                class="btn btn-primary"
+                style="font-size: 18px"
+                onclick="window.location.href='/dashboard'"
+              >
+                首頁
+              </button>
+            </li>
 
             <div class="dropdown">
-              <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 18px;">
+              <button
+                class="btn btn-primary dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                style="font-size: 18px"
+              >
                 搜尋模式
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" style="font-size: 18px;" href="/dashboard">輔助搜尋</a></li>
-                <li><a class="dropdown-item" style="font-size: 18px;" href="/AlSearchDashboard">智慧搜尋</a></li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    style="font-size: 18px"
+                    href="/dashboard"
+                    >輔助搜尋</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    style="font-size: 18px"
+                    href="/AlSearchDashboard"
+                    >智慧搜尋</a
+                  >
+                </li>
               </ul>
             </div>
 
-            <li class="nav-item"><button type="button" class="btn btn-primary" style="font-size: 18px;" onclick="window.location.href='/changePassword'">更改密碼</button></li>
+            <li class="nav-item">
+              <button
+                type="button"
+                class="btn btn-primary"
+                style="font-size: 18px"
+                onclick="window.location.href='/changePassword'"
+              >
+                更改密碼
+              </button>
+            </li>
           </ul>
 
-  
           <div class="text-end">
             <form action="/logout" method="get">
-              <button type="submit" class="btn btn-outline-light me-2" style="font-size: 18px;">登出</button>
+              <button
+                type="submit"
+                class="btn btn-outline-light me-2"
+                style="font-size: 18px"
+              >
+                登出
+              </button>
             </form>
           </div>
         </div>
       </div>
     </header>
 
-    <header class="shadow p-3 bg-underheaderblue text-white "></header>
+    <header class="shadow p-3 bg-underheaderblue text-white"></header>
 
     <!-- <div class="header">
       ICD-10編碼查詢平台使用者首頁
@@ -362,12 +373,47 @@
     </nav> -->
     <nav class="search-container navbar-light">
       <form action="/search" method="post" class="search-bar">
-        <input type="text" name="searchQuery" pattern=".*\S.*" required id="searchQuery">
+        <input
+          type="text"
+          name="searchQuery"
+          pattern=".*\S.*"
+          required
+          id="searchQuery"
+        />
+        <div class="custom-dropdown-container">
+          <button type="button" class="custom-dropdown-btn">▼</button>
+          <div class="custom-dropdown-content">
+            <a href="#" data-range="none">不選擇</a>
+            <a href="#" data-range="A00-B99">特定傳染病和寄生蟲病（A00-B99）</a>
+            <a href="#" data-range="C00-D49">腫瘤（C00-D49）</a>
+            <a href="#" data-range="D50-D89">血液及造血器官疾病和某些涉及免疫機制的疾患（D50-D89）</a>
+            <a href="#" data-range="E00-E89">內分泌、營養和代謝疾病（E00-E89）</a>
+            <a href="#" data-range="F01-F99">心理、行為和神經發育障礙（F01-F99）</a>
+            <a href="#" data-range="G00-G99">神經系統疾病（G00-G99）</a>
+            <a href="#" data-range="H00-H59">眼和附器疾病（H00-H59）</a>
+            <a href="#" data-range="H60-H95">耳和乳突疾病（H60-H95）</a>
+            <a href="#" data-range="I00-I99">循環系統疾病（I00-I99）</a>
+            <a href="#" data-range="J00-J99">呼吸系統疾病（J00-J99）</a>
+            <a href="#" data-range="K00-K95">消化系統疾病（K00-K95）</a>
+            <a href="#" data-range="L00-L99">皮膚和皮下組織疾病（L00-L99）</a>
+            <a href="#" data-range="M00-M99">肌肉骨骼系統和結締組織疾病（M00-M99）</a>
+            <a href="#" data-range="N00-N99">泌尿生殖系統疾病（N00-N99）</a>
+            <a href="#" data-range="O00-O9A">妊娠、分娩和產褥期（O00-O9A）</a>
+            <a href="#" data-range="P00-P96">出生時期起源的某些狀況（P00-P96）</a>
+            <a href="#" data-range="Q00-Q99">先天性畸形、變形和染色體異常（Q00-Q99）</a>
+            <a href="#" data-range="R00-R99">未分類其他地方的症狀、體徵和異常臨床及實驗室發現（R00-R99）</a>
+            <a href="#" data-range="S00-T88">傷害、中毒和某些其他外部原因的後果（S00-T88）</a>
+            <a href="#" data-range="V00-Y99">疾病外部原因（V00-Y99）</a>
+            <a href="#" data-range="Z00-Z99">影響健康狀態和醫療服務接觸的因素（Z00-Z99）</a>
+            <a href="#" data-range="U00-U85">特殊用途的代碼（U00-U85）</a>
+        </div>
+        
+        <input type="hidden" name="range" id="selectedRange" />
         <button class="search-btn" type="submit">
           <span>Search</span>
         </button>
       </form>
-  </nav>
+    </nav>
 
     <div class="results-table">
       <% if (typeof searchResults !== "undefined") { %>
@@ -389,9 +435,7 @@
 
           <tr>
             <td>
-              <div>
-                <%= result['2023_ICD-10-CM'] %>
-              </div>
+              <div><%= result['2023_ICD-10-CM'] %></div>
               <button
                 class="btn btn-outline-secondary btn-sm btn-copy"
                 onclick="copyToClipboard('<%= result['2023_ICD-10-CM'] %>')"
@@ -412,27 +456,25 @@
 
     <div class="results-table">
       <% if (typeof searchResults2014 !== "undefined") { %>
-        <h3 class="h3-code">2014 ICD-10</h3>
-        <table class="table table-hover" id="resultsTable">
-          <thead>
-            <tr>
-              <th>
-                <div>ICD-10</div>
-                <div>編碼</div>
-              </th>
-              <th>疾病英文名稱</th>
-              <th>疾病中文名稱</th>
-            </tr>
-          </thead>
+      <h3 class="h3-code">2014 ICD-10</h3>
+      <table class="table table-hover" id="resultsTable">
+        <thead>
+          <tr>
+            <th>
+              <div>ICD-10</div>
+              <div>編碼</div>
+            </th>
+            <th>疾病英文名稱</th>
+            <th>疾病中文名稱</th>
+          </tr>
+        </thead>
 
         <tbody>
           <% searchResults2014.forEach(function(result) { %>
 
           <tr>
             <td>
-              <div>
-                <%= result['2014_ICD-10-CM'] %>
-              </div>
+              <div><%= result['2014_ICD-10-CM'] %></div>
               <button
                 class="btn btn-outline-secondary btn-sm btn-copy"
                 onclick="copyToClipboard('<%= result['2014_ICD-10-CM'] %>')"
@@ -495,15 +537,35 @@
             console.error("無法複製: ", err);
           });
       }
+      document
+        .querySelectorAll(".custom-dropdown-content a")
+        .forEach((item) => {
+          item.addEventListener("click", (event) => {
+            event.preventDefault(); // 防止頁面跳轉
+            const range = item.getAttribute("data-range");
+
+            // 檢查是否選擇了 'none'
+            if (range === "none") {
+              document.getElementById("selectedRange").value = ""; // 清除輸入值
+              document.querySelector(".custom-dropdown-btn").innerText =
+                "▼"; // 重置按鈕文字
+            } else {
+              document.getElementById("selectedRange").value = range; // 設定選擇的範圍值
+              document.querySelector(".custom-dropdown-btn").innerText =
+                item.innerText; // 更新按鈕文字為選擇的項目
+            }
+          });
+        });
     </script>
 
-    <footer class="footer mt-auto py-3 bg-light d-flex justify-content-center align-items-center">
+    <footer
+      class="footer mt-auto py-3 bg-light d-flex justify-content-center align-items-center"
+    >
       <div class="container-footer">
         <div class="text-muted">輔仁大學 醫學資訊與創新應用學士學位學程</div>
         <div class="text-muted">Kevin Hung</div>
         <div class="text-muted">V2.3.26</div>
       </div>
     </footer>
-
   </body>
 </html>
