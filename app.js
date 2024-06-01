@@ -246,7 +246,6 @@ app.post("/regis", (req, res) => {
       );
   }
 
-  /*const insertQuery = "INSERT INTO users (username, password) VALUES (?, ?)";*/
   connection.query(
     "INSERT INTO users (username, password) VALUES (?, ?)",
     [email, password],
@@ -412,15 +411,6 @@ app.get("/AlSearchDashboard", (req, res) => {
   res.render("AISearch");
 });
 
-// 主頁路由
-/*app.get("/dashboard", (req, res) => {
-  if (req.session.isAuthenticated) {
-    res.render("userhomepage");
-  } else {
-    res.redirect("/login");
-  }
-});*/
-
 app.get("/dashboard", (req, res) => {
   if (req.session.isAuthenticated && req.session.username) {
     const currentUsername = req.session.username;
@@ -460,45 +450,6 @@ app.get("/adminlogout", (req, res) => {
     res.redirect("/adminlogin");
   });
 });
-
-// search路由 第一版
-/*app.post("/adminSearch", (req, res) => {
-  const searchQuery = req.body.searchQuery;
-  console.log(req.body.searchQuery);
-
-  performSearchInDatabase(searchQuery, (searchResults) => {
-    if (searchResults.length === 0) {
-      // 没有结果的时候
-      res.render("userhomepage", { searchResults: [] });
-    } else {
-      res.render("userhomepage", { searchResults: searchResults });
-    }
-  });
-});*/
-//第二版(新增歷史紀錄儲存功能)
-/*app.post("/search", (req, res) => {
-  const searchQuery = req.body.searchQuery;
-  const currentUsername = req.session.username; // 從會話中獲取當前用戶名
-  console.log(req.body.searchQuery);
-
-  // 對 2023 版本進行搜尋
-  performSearchInDatabase(searchQuery, (searchResults2023) => {
-    // 對 2014 版本進行搜尋
-    performSearch2014(searchQuery, (searchResults2014) => {
-      // 無論 2023 版本的搜尋結果如何，都會執行 2014 版本的搜尋
-
-      if (currentUsername) {
-        updateSearchHistory(currentUsername, searchQuery);
-      }
-
-      res.render("userhomepage", {
-        searchResults: searchResults2023.length > 0 ? searchResults2023 : [],
-        searchResults2014:
-          searchResults2014.length > 0 ? searchResults2014 : [],
-      });
-    });
-  });
-});*/
 
 //admin的search路由(無搜尋紀錄)
 app.post("/adminSearch", (req, res) => {
@@ -663,8 +614,6 @@ app.post("/update2014Icd10Coding", (req, res) => {
       }
 
       if (results.length > 0) {
-        /*const updateQuery =
-        "UPDATE `icd-10-cm_pcs` SET `2014_ICD-10-CM_english_name` = ?, `2014_ICD-10-CM_chinses_name` = ?, `2014_ICD-10-CM_description` = ? WHERE `2014_ICD-10-CM` = ?";*/
         const description2014 =
           englishName2014 + " " + chineseName2014 + " " + ICD10CM2014;
         connection.query(
@@ -794,7 +743,7 @@ app.post("/delete2014Icd10Coding", (req, res) => {
     }
   });
 });
-
+//this is for replicate api-key version
 // app.post("/AISearch", (req, res) => {
 //   const userInput = req.body.diagnosis;
 //   axios
