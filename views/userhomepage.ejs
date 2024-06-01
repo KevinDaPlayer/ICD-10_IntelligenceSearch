@@ -337,40 +337,6 @@
 
     <header class="shadow p-3 bg-underheaderblue text-white"></header>
 
-    <!-- <div class="header">
-      ICD-10編碼查詢平台使用者首頁
-      <form action="/logout" method="get">
-        <button type="submit" class="logout-btn">登出</button>
-      </form>
-    </div>
-
-    <div class="nav-container">
-      <nav class="user-nav">
-        <a href="/dashboard" class="nav-link">首頁</a>
-        <a href="/changePassword" class="nav-link">更改密碼</a>
-        <a href="/AlSearchDashboard" class="nav-link">智慧搜尋</a>
-      </nav>
-    </div> -->
-
-    <!-- <div class="search-container navbar-light">
-      <form action="/search" method="post">
-        <input
-          type="text"
-          placeholder="Search..."
-          class="search-input mr-sm-2"
-          name="searchQuery"
-          id="searchQuery"
-        />
-        <button type="submit" class="search-btn">搜尋</button>
-      </form>
-    </div> -->
-
-    <!-- <nav class="search-container navbar-light">
-      <form action="/search" method="post" class="form-inline">
-        <input type="text" class="form-control mr-sm-2" placeholder="Search..." name="searchQuery" id="searchQuery">
-        <button class="btn btn-search btn-outline-primary me-2 my-sm-0" type="submit">Search</button>
-      </form>
-    </nav> -->
     <nav class="search-container navbar-light">
       <form action="/search" method="post" class="search-bar">
         <input
@@ -541,18 +507,18 @@
         .querySelectorAll(".custom-dropdown-content a")
         .forEach((item) => {
           item.addEventListener("click", (event) => {
-            event.preventDefault(); // 防止頁面跳轉
+            event.preventDefault(); 
             const range = item.getAttribute("data-range");
 
-            // 檢查是否選擇了 'none'
+          
             if (range === "none") {
-              document.getElementById("selectedRange").value = ""; // 清除輸入值
+              document.getElementById("selectedRange").value = ""; 
               document.querySelector(".custom-dropdown-btn").innerText =
-                "▼"; // 重置按鈕文字
+                "▼"; 
             } else {
-              document.getElementById("selectedRange").value = range; // 設定選擇的範圍值
+              document.getElementById("selectedRange").value = range; 
               document.querySelector(".custom-dropdown-btn").innerText =
-                item.innerText; // 更新按鈕文字為選擇的項目
+                item.innerText; 
             }
           });
         });
