@@ -286,8 +286,6 @@ app.post("/forgetPassword", (req, res) => {
       '<script>alert("驗證碼不正確");window.location.href="/forgetPassword";</script>'
     );
   }
-
-  /*const searchQuery = "SELECT * FROM users WHERE username = ?";*/
   connection.query(
     "SELECT * FROM users WHERE username = ?",
     [email],
@@ -305,9 +303,7 @@ app.post("/forgetPassword", (req, res) => {
           '<script>alert("用戶不存在");window.location.href="/forgetPassword";</script>'
         );
       }
-
       // 用戶存在，更新密碼
-      /*const updateQuery = "UPDATE users SET password = ? WHERE username = ?";*/
       connection.query(
         "UPDATE users SET password = ? WHERE username = ?",
         [password, email],
@@ -318,12 +314,10 @@ app.post("/forgetPassword", (req, res) => {
               '<script>alert("無法更新密碼");window.location.href="/forgot-password";</script>'
             );
           }
-
           // 清除 session 中的驗證碼
           if (req.session) {
             delete req.session.verificationCode;
           }
-
           // 密碼更新成功
           res.send(
             '<script>alert("密碼變更成功");window.location.href="/login";</script>'
@@ -350,10 +344,6 @@ app.get("/changePassword", (req, res) => {
 app.post("/changePassword", (req, res) => {
   const { originpassword, newpassword, confirmNewPassword } = req.body;
   const currentUsername = req.session.username;
-
-  if (!currentUsername) {
-    return res.status(400).send("未檢測到用戶登入。");
-  }
 
   if (newpassword !== confirmNewPassword) {
     return res
@@ -513,9 +503,9 @@ app.get("/adminlogout", (req, res) => {
 //admin的search路由(無搜尋紀錄)
 app.post("/adminSearch", (req, res) => {
   const searchQuery = req.body.searchQuery;
-
-  performSearchInDatabase(searchQuery, (searchResults2023) => {
-    performSearch2014(searchQuery, (searchResults2014) => {
+  const range = req.body.range;
+  performSearchInDatabase(searchQuery, range, (searchResults2023) => {
+    performSearch2014(searchQuery, range, (searchResults2014) => {
       res.render("adminuserpage", {
         searchResults: searchResults2023.length > 0 ? searchResults2023 : [],
         searchResults2014:
@@ -527,22 +517,21 @@ app.post("/adminSearch", (req, res) => {
 
 app.post("/search", (req, res) => {
   const searchQuery = req.body.searchQuery;
+  const range = req.body.range;
   const currentUsername = req.session.username;
 
-  performSearchInDatabase(searchQuery, (searchResults2023) => {
-    performSearch2014(searchQuery, (searchResults2014) => {
+  performSearchInDatabase(searchQuery, range, (searchResults2023) => {
+    performSearch2014(searchQuery, range, (searchResults2014) => {
       if (currentUsername) {
         updateSearchHistory(currentUsername, searchQuery, () => {
-          // 搜尋歷史更新後再次獲取最新的搜尋歷史
           connection.query(
             "SELECT searchhistory FROM users WHERE username = ?",
             [currentUsername],
             (err, results) => {
               if (err) {
                 console.error("Database query error:", err);
-                return; // 處理錯誤
+                return;
               }
-              /*console.log("Query results:", results);*/
 
               let updatedSearchHistory =
                 results.length > 0 ? results[0].searchhistory || [] : [];
@@ -558,7 +547,6 @@ app.post("/search", (req, res) => {
           );
         });
       } else {
-        // 如果用戶未登入，僅渲染搜索結果，不顯示搜索歷史
         res.render("userhomepage", {
           searchResults: searchResults2023.length > 0 ? searchResults2023 : [],
           searchResults2014:
@@ -571,8 +559,6 @@ app.post("/search", (req, res) => {
 });
 
 app.get("/adminUpdateHistory", (req, res) => {
-  /*const query =
-    "SELECT * FROM adminUpdateHistory ORDER BY updateDate DESC LIMIT 20";*/
   connection.query(
     "SELECT * FROM adminUpdateHistory ORDER BY updateDate DESC LIMIT 20",
     (err, results) => {
@@ -589,11 +575,8 @@ app.get("/adminUpdateHistory", (req, res) => {
 app.post("/update2023Icd10Coding", (req, res) => {
   const { ICD10CM, englishName, chineseName } = req.body;
   const currentAdminname = req.session.adminname;
-  /*const checkQuery = "SELECT * FROM `icd-10-cm_pcs` WHERE `2023_ICD-10-CM` = ?";*/
 
   function recordAdminUpdate(updateMessage) {
-    /*const insertHistoryQuery =
-      "INSERT INTO adminUpdateHistory (updateAdmin, updateMessage) VALUES (?, ?)";*/
     connection.query(
       "INSERT INTO adminUpdateHistory (updateAdmin, updateMessage) VALUES (?, ?)",
       [currentAdminname, updateMessage],
@@ -615,8 +598,6 @@ app.post("/update2023Icd10Coding", (req, res) => {
       }
 
       if (results.length > 0) {
-        /*const updateQuery =
-          "UPDATE `icd-10-cm_pcs` SET `2023_ICD-10-CM_english_name` = ?, `2023_ICD-10-CM_chinses_name` = ?, `2023_ICD-10-CM_description` = ? WHERE `2023_ICD-10-CM` = ?";*/
         const description = englishName + " " + chineseName + " " + ICD10CM;
         connection.query(
           "UPDATE `icd-10-cm_pcs` SET `2023_ICD-10-CM_english_name` = ?, `2023_ICD-10-CM_chinses_name` = ?, `2023_ICD-10-CM_description` = ? WHERE `2023_ICD-10-CM` = ?",
@@ -633,8 +614,6 @@ app.post("/update2023Icd10Coding", (req, res) => {
           }
         );
       } else {
-        /*const insertQuery =
-          "INSERT INTO `icd-10-cm_pcs` (`2023_ICD-10-CM`, `2023_ICD-10-CM_english_name`, `2023_ICD-10-CM_chinses_name`, `2023_ICD-10-CM_description`) VALUES (?, ?, ?, ?)";*/
         const description = englishName + " " + chineseName + " " + ICD10CM;
         connection.query(
           "INSERT INTO `icd-10-cm_pcs` (`2023_ICD-10-CM`, `2023_ICD-10-CM_english_name`, `2023_ICD-10-CM_chinses_name`, `2023_ICD-10-CM_description`) VALUES (?, ?, ?, ?)",
@@ -816,31 +795,59 @@ app.post("/delete2014Icd10Coding", (req, res) => {
   });
 });
 
+// app.post("/AISearch", (req, res) => {
+//   const userInput = req.body.diagnosis;
+//   axios
+//     .post(
+//       "http://localhost:5000/rag",
+//       { question: userInput },
+//       {
+//         headers: { "Content-Type": "application/json" },
+//       }
+//     )
+//     .then((response) => {
+//       console.log("Data from Flask:", response.data.result);
+
+//       const predictText = response.data.result;
+//       const regex = /\d+\.\s([^:]+)\s:\s([^;]+);\s(.+)/g;
+//       const predictions = [];
+
+//       let matches;
+//       while ((matches = regex.exec(predictText)) !== null) {
+//         predictions.push({
+//           code: matches[1].trim(),
+//           description: matches[2].trim(),
+//           detail: matches[3].trim(),
+//         });
+//       }
+
+//       res.render("AISearch", { results: predictions });
+//     })
+//     .catch((error) => {
+//       console.error(error);
+//       res.status(500).render("AISearch", { results: "伺服器錯誤" });
+//     });
+// });
+
 app.post("/AISearch", (req, res) => {
   const userInput = req.body.diagnosis;
+
   axios
     .post(
-      "http://localhost:5000/predict_icd10",
-      { prompt: userInput },
+      "http://localhost:5000/rag",
+      { question: userInput },
       {
         headers: { "Content-Type": "application/json" },
       }
     )
     .then((response) => {
-      console.log("Data from Flask:", response.data.result);
+      console.log("Data from Flask:", response.data);
 
-      const predictText = response.data.result;
-      const regex = /\d+\.\s([^:]+)\s:\s([^;]+);\s(.+)/g;
-      const predictions = [];
-
-      let matches;
-      while ((matches = regex.exec(predictText)) !== null) {
-        predictions.push({
-          code: matches[1].trim(),
-          description: matches[2].trim(),
-          detail: matches[3].trim(),
-        });
-      }
+      const predictions = response.data.topFiveICD10Codes.map((item) => ({
+        code: item.code,
+        description: item.description,
+        detail: item.detail,
+      }));
 
       res.render("AISearch", { results: predictions });
     })
@@ -850,24 +857,7 @@ app.post("/AISearch", (req, res) => {
     });
 });
 
-// 搜尋函數
-// function performSearchInDatabase(query, callback) {
-//   const sqlQuery = `
-//   SELECT
-//     \`2023_ICD-10-CM\`,
-//     \`2023_ICD-10-CM_english_name\`,
-//     \`2023_ICD-10-CM_chinses_name\`
-//   FROM \`icd-10-cm_pcs\`
-//   WHERE \`2023_ICD-10-CM_description\` LIKE '%${query}%'
-// `;
-
-//   connection.query(sqlQuery, (error, results) => {
-//     if (error) throw error;
-//     callback(results);
-//   });
-// }
-
-function performSearchInDatabase(query, callback) {
+function performSearchInDatabase(query, range, callback) {
   const keywords = query.split(" ");
   const likeSql = keywords.map(
     (keyword) => `\`2023_ICD-10-CM_description\` LIKE ?`
@@ -875,13 +865,20 @@ function performSearchInDatabase(query, callback) {
   const param = keywords.map((keyword) => `%${keyword}%`);
   const allSql = likeSql.join(" AND ");
 
+  let rangeCondition = "";
+  if (range) {
+    const [start, end] = range.split("-");
+    rangeCondition = `AND \`2023_ICD-10-CM\` BETWEEN ? AND ?`;
+    param.push(start, end);
+  }
+
   const sqlQuery = `
   SELECT
     \`2023_ICD-10-CM\`,
     \`2023_ICD-10-CM_english_name\`,
     \`2023_ICD-10-CM_chinses_name\`
   FROM \`icd-10-cm_pcs\`
-  WHERE ${allSql}
+  WHERE ${allSql} ${rangeCondition}
 `;
 
   connection.query(sqlQuery, param, (error, results) => {
@@ -889,24 +886,8 @@ function performSearchInDatabase(query, callback) {
     callback(results);
   });
 }
-// 2014搜尋函數
-// function performSearch2014(query, callback) {
-//   const sqlQuery = `
-//     SELECT
-//       \`2014_ICD-10-CM\`,
-//       \`2014_ICD-10-CM_english_name\`,
-//       \`2014_ICD-10-CM_chinses_name\`
-//     FROM \`icd-10-cm_pcs\`
-//     WHERE \`2014_ICD-10-CM_description\` LIKE '%${query}%'
-//   `;
 
-//   connection.query(sqlQuery, (error, results) => {
-//     if (error) throw error;
-//     callback(results);
-//   });
-// }
-
-function performSearch2014(query, callback) {
+function performSearch2014(query, range, callback) {
   const keywords = query.split(" ");
   const likeSql = keywords.map(
     (keywords) => `\`2014_ICD-10-CM_description\` LIKE ?`
@@ -915,13 +896,20 @@ function performSearch2014(query, callback) {
 
   const allSql = likeSql.join(" AND ");
 
+  let rangeCondition = "";
+  if (range) {
+    const [start, end] = range.split("-");
+    rangeCondition = `AND \`2014_ICD-10-CM\` BETWEEN ? AND ?`;
+    param.push(start, end);
+  }
+
   const sqlQuery = `
     SELECT
       \`2014_ICD-10-CM\`,
       \`2014_ICD-10-CM_english_name\`,
       \`2014_ICD-10-CM_chinses_name\`
     FROM \`icd-10-cm_pcs\`
-    WHERE ${allSql}
+    WHERE ${allSql} ${rangeCondition}
   `;
 
   connection.query(sqlQuery, param, (error, results) => {
