@@ -743,13 +743,13 @@ app.post("/delete2014Icd10Coding", (req, res) => {
     }
   });
 });
-//this is for replicate api-key version
+// //this is for replicate api-key version
 // app.post("/AISearch", (req, res) => {
 //   const userInput = req.body.diagnosis;
 //   axios
 //     .post(
-//       "http://localhost:5000/rag",
-//       { question: userInput },
+//       "http://localhost:5000/predict_icd10",
+//       { prompt: userInput },
 //       {
 //         headers: { "Content-Type": "application/json" },
 //       }
@@ -770,7 +770,7 @@ app.post("/delete2014Icd10Coding", (req, res) => {
 //         });
 //       }
 
-//       res.render("AISearch", { results: predictions });
+//       res.render("AISearch", { results: predictions, userInput: userInput });
 //     })
 //     .catch((error) => {
 //       console.error(error);
@@ -798,7 +798,7 @@ app.post("/AISearch", (req, res) => {
         detail: item.detail,
       }));
 
-      res.render("AISearch", { results: predictions });
+      res.render("AISearch", { results: predictions, userInput: userInput });
     })
     .catch((error) => {
       console.error(error);
