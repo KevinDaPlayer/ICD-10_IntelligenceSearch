@@ -15,5 +15,5 @@
 + 網頁設計: HTML、CSS、JavaScript、BootStrap
 + 渲染模板: EJS
 + 後端框架: Node.js、Flask
-+ LLM RAG: Ollama、Llama3、LangChain
++ LLM RAG: LangChain、Ollama、Llama3
 + 資料庫: MySQL
