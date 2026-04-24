@@ -17,3 +17,5 @@
 + 後端框架: Node.js、Flask
 + LLM RAG: LangChain、Ollama、Llama3
 + 資料庫: MySQL
+
+RAG應用部分於: https://github.com/KevinDaPlayer/Llama3_RAG/tree/main
